@@ -3,13 +3,24 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+/**
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $tipo
+ */
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +31,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tipo'
     ];
 
     /**
@@ -43,5 +55,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Obtiene el alumno asociado al usuario.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function cursos(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Curso::class, 'alumno_curso', 'alumno_id', 'curso_id');
     }
 }
