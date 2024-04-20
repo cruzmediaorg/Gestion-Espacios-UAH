@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Grado;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GradoController extends Controller
 {
@@ -12,7 +13,11 @@ class GradoController extends Controller
      */
     public function index()
     {
-        //
+        $grados = Grado::all();
+
+        return Inertia::render('Control/Grados/Index', [
+            'grados' => $grados
+        ]);
     }
 
     /**

@@ -11,6 +11,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $fecha_cancelacion
  * @property Carbon $fecha_aprobacion
  * @property Carbon $fecha_rechazo
+ * @property Carbon $fecha
+ * @property string $hora_inicio
+ * @property string $hora_fin
+ * @property string $comentario
+ * @property int $cancelado_por
+ * @property int $reservable_id
+ * @property string $reservable_type
+ * @property User $usuario
  */
 class Reserva extends Model
 {

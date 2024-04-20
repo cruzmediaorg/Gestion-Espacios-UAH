@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $espacio_id
+ * @property int $equipamiento_id
+ * @property int $cantidad
+ */
 class EquipamientoEspacio extends Pivot
 {
     const TABLA = 'equipamiento_espacio';
