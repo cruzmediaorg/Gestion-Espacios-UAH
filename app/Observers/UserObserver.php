@@ -14,11 +14,11 @@ class UserObserver
     {
 
         if ($user->tipo == 'general') {
-            $user->assignRole('general');
+            $user->assignRole('General');
         } elseif ($user->tipo == 'responsable') {
-            $user->assignRole('responsable');
+            $user->assignRole('Responsable');
         } elseif ($user->tipo == 'administrador') {
-            $user->assignRole('administrador');
+            $user->assignRole('Administrador');
         } else {
             Log::error('El tipo de usuario no es válido');
         }

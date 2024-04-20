@@ -22,11 +22,12 @@ class DatabaseSeeder extends Seeder
             UsuariosRandomSeeder::class,
             CursoSeeder::class,
             HorarioSeeder::class,
-            LocalizacionesTipoEspacioEquipamientosSeeder::class,
+            LocalizacionesTipoEquipamientoEspaciosSeeder::class,
             EspacioSeeder::class,
             PoblarEspaciosEquipamientos::class,
             CaracteristicaSeeder::class,
             PoblarEspaciosCaracteristicas::class,
+            PermissionSeeder::class,
         ]);
     }
 }

@@ -1,14 +1,20 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from "tailwindcss/defaultTheme"
+
 module.exports = {
-    darkMode: ["class"],
+    darkMode: "class",
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.jsx',
+        './resources/js/**/*.js',
+        './resources/js/**/*.ts',
+        './resources/js/**/*.tsx',
     ],
 
     theme: {
+
         container: {
             center: true,
             padding: "2rem",
@@ -54,10 +60,18 @@ module.exports = {
                     foreground: "hsl(var(--card-foreground))",
                 },
             },
+            borderRadius: {
+                lg: `var(--radius)`,
+                md: `calc(var(--radius) - 2px)`,
+                sm: "calc(var(--radius) - 4px)",
+            },
+            fontFamily: {
+                sans: ["Figtree", ...defaultTheme.fontFamily.sans],
+            },
             keyframes: {
                 "accordion-down": {
                     from: {
-                        height: "0"
+                        height: 0
                     },
                     to: {
                         height: "var(--radix-accordion-content-height)"
@@ -68,7 +82,7 @@ module.exports = {
                         height: "var(--radix-accordion-content-height)"
                     },
                     to: {
-                        height: "0"
+                        height: 0
                     },
                 },
             },

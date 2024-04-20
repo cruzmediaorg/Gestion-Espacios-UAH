@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Espacio extends Model
@@ -16,7 +17,7 @@ class Espacio extends Model
     protected $fillable = [
         'nombre',
         'localizacion_id',
-        'tiposespacio_id',
+        'tiposespacios_id',
         'capacidad',
     ];
 
@@ -40,10 +41,40 @@ class Espacio extends Model
 
     /**
      * Obtener los equipamientos asociados al espacio
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Many to Many
      */
     public function equipamientos()
     {
-        return $this->belongsToMany(Equipamiento::class, 'espacio_equipamiento', 'espacio_id', 'equipamiento_id');
+        return EquipamientoEspacio::where('espacio_id', $this->id)->with('equipamiento')->get();
+    }
+
+    /**
+     * Obtener las reservas asociadas al espacio
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+
+    public function reservas()
+    {
+        return $this->morphMany(Reserva::class, 'reservable');
+    }
+
+    /**
+     * Horarios ocupados por el espacio
+     * Devuelve los horarios que no están disponibles para reservar
+     * 
+     * @return array
+     */
+
+    public function horariosOcupados()
+    {
+        return $this->reservas->map(function ($reserva) {
+            return [
+                'fecha' => $reserva->fecha,
+                'hora_inicio' => $reserva->hora_inicio,
+                'hora_fin' => $reserva->hora_fin,
+                'estado' => $reserva->estado(),
+                'asignado_a' => $reserva->usuario->name ?? 'No asignado',
+            ];
+        })->toArray();
     }
 }

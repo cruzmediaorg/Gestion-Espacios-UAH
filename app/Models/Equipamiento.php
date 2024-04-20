@@ -11,4 +11,22 @@ class Equipamiento extends Model
     const TABLA = 'equipamientos';
 
     use HasFactory, SoftDeletes;
+
+    protected $table = self::TABLA;
+
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'cantidad',
+    ];
+
+    /**
+     * Obtener los espacios asociados al equipamiento
+     * BelongsToMany
+     */
+
+    public function espacios()
+    {
+        return $this->belongsToMany(Espacio::class);
+    }
 }

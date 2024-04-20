@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EspacioResource;
+use App\Models\Equipamiento;
 use App\Models\Espacio;
+use App\Models\Localizacion;
+use App\Models\TipoEspacio;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class EspacioController extends Controller
 {
@@ -12,7 +17,15 @@ class EspacioController extends Controller
      */
     public function index()
     {
-        //
+        $espacios = Espacio::all();
+        $tiposEspacios = TipoEspacio::all()->pluck('nombre', 'id');
+        $localizaciones = Localizacion::all()->pluck('nombre', 'id');
+
+        return Inertia::render('Control/Espacios/Index', [
+            'espacios' => EspacioResource::collection($espacios),
+            'tiposEspacios' => $tiposEspacios,
+            'localizaciones' => $localizaciones
+        ]);
     }
 
     /**
@@ -20,7 +33,12 @@ class EspacioController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Control/Espacios/Form', [
+            'isEdit' => false,
+            'equipamientos' => Equipamiento::all(),
+            'localizaciones' => Localizacion::all(),
+            'tiposespacios' => TipoEspacio::all()
+        ]);
     }
 
     /**
@@ -28,7 +46,16 @@ class EspacioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required',
+            'localizacion_id' => 'required|exists:localizaciones,id',
+            'tiposespacios_id' => 'required|exists:tiposEspacios,id',
+            'capacidad' => 'required|integer',
+        ]);
+
+        Espacio::create($request->all());
+
+        return redirect()->route('espacios.index')->with('success', 'Espacio creado correctamente');
     }
 
     /**
@@ -44,7 +71,18 @@ class EspacioController extends Controller
      */
     public function edit(Espacio $espacio)
     {
-        //
+
+        $equipamientos = Equipamiento::all();
+        $localizaciones = Localizacion::all();
+        $tiposEspacios = TipoEspacio::all();
+
+        return Inertia::render('Control/Espacios/Form', [
+            'isEdit' => true,
+            'espacio' => EspacioResource::make($espacio),
+            'equipamientos' => $equipamientos,
+            'localizaciones' => $localizaciones,
+            'tiposespacios' => $tiposEspacios
+        ]);
     }
 
     /**
@@ -52,7 +90,16 @@ class EspacioController extends Controller
      */
     public function update(Request $request, Espacio $espacio)
     {
-        //
+        $request->validate([
+            'nombre' => 'required',
+            'localizacion_id' => 'required|exists:localizaciones,id',
+            'tiposespacios_id' => 'required|exists:tiposEspacios,id',
+            'capacidad' => 'required|integer',
+        ]);
+
+        $espacio->update($request->all());
+
+        return redirect()->route('espacios.index')->with('success', 'Espacio actualizado correctamente');
     }
 
     /**

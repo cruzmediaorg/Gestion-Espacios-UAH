@@ -12,9 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Role::create(['name' => 'administrador']);
-        Role::create(['name' => 'responsable']);
-        Role::create(['name' => 'general']);
+        Role::create(['name' => 'Administrador']);
+        Role::create(['name' => 'Responsable']);
+        Role::create(['name' => 'General']);
     }
 
     /**
@@ -22,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Role::where('name', 'administrador')->delete();
-        Role::where('name', 'responsable')->delete();
-        Role::where('name', 'general')->delete();
+        Role::where('name', 'Administrador')->delete();
+        Role::where('name', 'Responsable')->delete();
+        Role::where('name', 'General')->delete();
     }
 };

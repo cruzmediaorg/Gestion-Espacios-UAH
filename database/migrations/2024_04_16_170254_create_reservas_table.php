@@ -16,7 +16,8 @@ return new class extends Migration
     {
         Schema::create(Reserva::TABLA, function (Blueprint $table) {
             $table->id();
-            $table->foreignId('espacio_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('reservable_id');
+            $table->string('reservable_type');
             $table->unsignedBigInteger('asignado_a');
             $table->foreign('asignado_a')->references('id')->on('users')->cascadeOnDelete();
             $table->date('fecha');
