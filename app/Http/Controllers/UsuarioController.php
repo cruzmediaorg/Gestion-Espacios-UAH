@@ -34,7 +34,7 @@ class UsuarioController extends Controller
 
         User::create($request->all());
 
-        return redirect()->route('usuarios.index');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente');
     }
 
     public function show(User $usuario)
@@ -69,6 +69,6 @@ class UsuarioController extends Controller
 
         $usuario->syncRoles($request->roles);
 
-        return redirect()->route('usuarios.index');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente');
     }
 }

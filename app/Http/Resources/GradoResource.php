@@ -23,6 +23,7 @@ class GradoResource extends JsonResource
             'codigo' => $this->codigo,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'asignaturas' => $this->asignaturas()->get(),
         ];
     }
 }

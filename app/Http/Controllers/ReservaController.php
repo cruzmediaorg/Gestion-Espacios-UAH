@@ -137,6 +137,6 @@ class ReservaController extends Controller
             'comentario' => $request->comentario,
         ]);
 
-        return redirect()->route('reservas.index');
+        return redirect()->route('reservas.index')->with('success', 'Reserva actualizada correctamente');
     }
 }

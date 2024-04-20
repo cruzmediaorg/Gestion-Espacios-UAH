@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AsignaturaGradoController;
 use App\Http\Controllers\EspacioController;
 use App\Http\Controllers\EquipamientoEspacioController;
 use App\Http\Controllers\GradoController;
@@ -13,9 +14,9 @@ use Inertia\Inertia;
 
 
 Route::get('/test', function () {
-    $espacio = App\Models\Espacio::find(1);
+    $espacio = App\Models\Grado::find(48);
 
-    return $espacio->equipamientos();
+    return $espacio->asignaturas()->get();
 })->name('test');
 
 Route::get('/', function () {
@@ -26,8 +27,14 @@ Route::get('/', function () {
 })->name('welcome');
 
 
+/*
+* Rutas para las reservas
+*/
 Route::resource('reservas', ReservaController::class)->middleware(['auth', 'verified']);
 
+/*
+* Rutas para las gestiones de control
+*/
 Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
         return Inertia::render('Control/Index');
@@ -35,12 +42,27 @@ Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('usuarios', UsuarioController::class);
     Route::resource('roles', RoleController::class);
-    Route::resource('espacios', EspacioController::class);
+    /*
+    * Rutas para los grados
+    */
     Route::resource('grados', GradoController::class);
-    Route::get('/espacios/equipamiento/{id}/edit', [EquipamientoEspacioController::class, 'edit'])->name('espacios.equipamiento.edit');
-    Route::put('/espacios/equipamiento/{id}', [EquipamientoEspacioController::class, 'update'])->name('espacios.equipamiento.update');
-    Route::delete('/espacios/equipamiento/{id}', [EquipamientoEspacioController::class, 'destroy'])->name('espacios.equipamiento.destroy');
-    Route::post('/espacios/equipamiento', [EquipamientoEspacioController::class, 'store'])->name('espacios.equipamiento.store');
+    Route::group(['prefix' => 'grados/asignaturas'], function () {
+        Route::get('/{id}/edit', [AsignaturaGradoController::class, 'edit'])->name('grados.asignaturas.edit');
+        Route::put('/{id}', [AsignaturaGradoController::class, 'update'])->name('grados.asignaturas.update');
+        Route::delete('/{id}', [AsignaturaGradoController::class, 'destroy'])->name('grados.asignaturas.destroy');
+        Route::post('/', [AsignaturaGradoController::class, 'store'])->name('grados.asignaturas.store');
+    });
+
+    /*
+    * Rutas para los espacios
+    */
+    Route::resource('espacios', EspacioController::class);
+    Route::group(['prefix' => 'espacios/equipamiento'], function () {
+        Route::get('/{id}/edit', [EquipamientoEspacioController::class, 'edit'])->name('espacios.equipamiento.edit');
+        Route::put('/{id}', [EquipamientoEspacioController::class, 'update'])->name('espacios.equipamiento.update');
+        Route::delete('/{id}', [EquipamientoEspacioController::class, 'destroy'])->name('espacios.equipamiento.destroy');
+        Route::post('/', [EquipamientoEspacioController::class, 'store'])->name('espacios.equipamiento.store');
+    });
 });
 
 Route::get('/dashboard', function () {

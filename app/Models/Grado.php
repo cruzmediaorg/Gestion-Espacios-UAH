@@ -22,7 +22,7 @@ class Grado extends Model
 
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nombre', 'tipoGrado_id'];
+    protected $fillable = ['nombre', 'tipoGrado_id', 'codigo'];
 
 
     /*
@@ -40,6 +40,6 @@ class Grado extends Model
      */
     public function asignaturas()
     {
-        return $this->belongsToMany(Asignatura::class, 'asignatura_grado', 'grado_id', 'asignatura_id');
+        return $this->belongsToMany(Asignatura::class, 'asignatura_grado', 'grado_id', 'asignatura_id')->withPivot('id');
     }
 }

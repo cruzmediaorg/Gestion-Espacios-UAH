@@ -62,12 +62,21 @@ export function DataTable<TData, TValue>({
             <div className="flex items-center justify-between w-full gap-2">
 
                 <div className="flex items-center py-4 w-full">
-                    {/* Filtro por correo */}
+                    <select className="px-4 rounded-md border py-2 w-36 mr-2" onChange={(event) => {
+                        table.getColumn("tipoGrado")?.setFilterValue(event.target.value)
+                    }
+                    }>
+                        <option value="">Todos</option>
+                        <option value="superior">Grado Superior</option>
+                        <option value="máster">Máster</option>
+                        <option value="doctorado">Doctorado</option>
+                    </select>
+
                     <Input
                         placeholder="Buscar por nombre"
-                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                        value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
-                            table.getColumn("name")?.setFilterValue(event.target.value)
+                            table.getColumn("nombre")?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm w-full"
                     />

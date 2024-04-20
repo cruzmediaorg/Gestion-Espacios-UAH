@@ -1,11 +1,36 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import NavLink from '@/Components/NavLink';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { HomeIcon, Calendar, Check, Table } from 'lucide-react';
+
+import { Toaster } from "@/Components/ui/toaster"
+import { useToast } from "@/Components/ui/use-toast"
+import { useEffect } from 'react';
 
 export default function Authenticated({ user, header, children }) {
 
     const currentRoute = window.location.pathname;
+
+    const page = usePage();
+    const { toast } = useToast()
+
+
+    useEffect(() => {
+        if (page.props.flash.success) {
+            toast({
+                title: page.props.flash.success,
+                variant: 'success'
+            })
+        }
+        if (page.props.flash.error) {
+            toast({
+                title: page.props.flash.error,
+                variant: 'error'
+            })
+        }
+
+    }, [page.props.flash.error, page.props.flash.success])
+
 
     return (
         <div className="min-h-screen flex bg-gray-100">
@@ -43,6 +68,7 @@ export default function Authenticated({ user, header, children }) {
             </div>
 
             <main className="h-[100vh] overflow-y-scroll max-w-screen-xl w-full p-12">
+                <Toaster />
                 <header className='w-full border-b py-2'>
                     {header}
                 </header>

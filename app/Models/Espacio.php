@@ -45,10 +45,10 @@ class Espacio extends Model
     }
 
     /**
-     * Obtener los equipamientos asociados al espacio
-     * Many to Many
+     * Obtenemos los equipamientos asociados al espacio
+     * @return \Illuminate\Database\Eloquent\Collection<App\Models\EquipamientoEspacio>
      */
-    public function equipamientos()
+    public function equipamientos(): \Illuminate\Database\Eloquent\Collection
     {
         return EquipamientoEspacio::where('espacio_id', $this->id)->with('equipamiento')->get();
     }

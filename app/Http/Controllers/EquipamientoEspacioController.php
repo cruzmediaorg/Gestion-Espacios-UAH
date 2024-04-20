@@ -61,20 +61,16 @@ class EquipamientoEspacioController extends Controller
     {
 
         $EquipamientoEspacio = EquipamientoEspacio::find($id);
-        $equipamientos = Equipamiento::all();
-        $localizaciones = Localizacion::all();
-        $tiposEspacios = TipoEspacio::all();
         $espacio = Espacio::find($EquipamientoEspacio->espacio_id);
 
         return Inertia::render('Control/Espacios/Form', [
             'EquipamientoEspacio' => EquipamientoEspacioResource::make($EquipamientoEspacio),
-            'isEquipamientoDialogOpen' => true,
             'isEquipamientoEspacioEdit' => true,
             'isEdit' => true,
             'espacio' => EspacioResource::make($espacio),
-            'equipamientos' => $equipamientos,
-            'localizaciones' => $localizaciones,
-            'tiposespacios' => $tiposEspacios
+            'equipamientos' => Equipamiento::all(),
+            'localizaciones' => Localizacion::all(),
+            'tiposespacios' => TipoEspacio::all(),
         ]);
     }
 

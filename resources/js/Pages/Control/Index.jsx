@@ -40,7 +40,7 @@ export default function Dashboard({ auth }) {
                     <p className="text-gray-600 text-center">
                         Administración de grados, masters y doctorados
                     </p>
-                    <Link href="/grados" className="mt-4 bg-uahBlue text-white px-4 py-2 ">Gestionar</Link>
+                    <Link href="/control/grados" className="mt-4 bg-uahBlue text-white px-4 py-2 ">Gestionar</Link>
                 </div>
                 <div className="p-4 border h-48 flex flex-col justify-center items-center hover:bg-gray-50">
                     <Space size="48" />
