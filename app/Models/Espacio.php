@@ -46,9 +46,9 @@ class Espacio extends Model
 
     /**
      * Obtenemos los equipamientos asociados al espacio
-     * @return \Illuminate\Database\Eloquent\Collection<App\Models\EquipamientoEspacio>
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function equipamientos(): \Illuminate\Database\Eloquent\Collection
+    public function equipamientos()
     {
         return EquipamientoEspacio::where('espacio_id', $this->id)->with('equipamiento')->get();
     }
