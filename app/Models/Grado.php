@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $nombre
+ * @property int $tipoGrado_id
+ * @property string $codigo
+ * @property string $created_at
+ * @property string $updated_at
+ * @property TipoGrado $tipoGrado
+ * @property Asignatura[] $asignaturas
+ */
 class Grado extends Model
 {
     const TABLA = 'grados';
