@@ -10,6 +10,7 @@ use App\Models\Espacio;
 use App\Models\Reserva;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -18,7 +19,7 @@ class ReservaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): \Inertia\Response
     {
         $reservas = Reserva::all();
 
@@ -31,9 +32,8 @@ class ReservaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): \Inertia\Response
     {
-
         $espacios = Espacio::all();
         $usuarios = User::all();
         $recursos = Equipamiento::all();
@@ -50,7 +50,7 @@ class ReservaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ReservaRequest $request)
+    public function store(ReservaRequest $request): RedirectResponse
     {
         // "horas" => "19:00 - 20:00"
 
@@ -80,17 +80,9 @@ class ReservaController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Reserva $reserva)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Reserva $reserva)
+    public function edit(Reserva $reserva): \Inertia\Response
     {
         $espacios = Espacio::all();
         $usuarios = User::all();
@@ -110,7 +102,7 @@ class ReservaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ReservaRequest $request, Reserva $reserva)
+    public function update(ReservaRequest $request, Reserva $reserva): RedirectResponse
     {
         $horas = explode(' - ', $request->horas);
         $hora_inicio = $horas[0];
@@ -146,13 +138,5 @@ class ReservaController extends Controller
         ]);
 
         return redirect()->route('reservas.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Reserva $reserva)
-    {
-        //
     }
 }

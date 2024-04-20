@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property string $name
@@ -59,9 +60,9 @@ class User extends Authenticatable
 
     /**
      * Obtiene el alumno asociado al usuario.
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Curso>
      */
-    public function cursos(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function cursos(): BelongsToMany
     {
         return $this->belongsToMany(Curso::class, 'alumno_curso', 'alumno_id', 'curso_id');
     }

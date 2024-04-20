@@ -38,14 +38,16 @@ class Reserva extends Model
         'fecha_cancelacion',
         'cancelado_por'
     ];
-
     /**
-     * Obtener el modelo al que pertenece la reserva
+     * Get the model that owns the reserva.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function reservable(): MorphTo
     {
         return $this->morphTo();
     }
+
 
     /**
      * Obtener el usuario al que se le asignó la reserva

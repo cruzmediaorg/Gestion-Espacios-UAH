@@ -19,7 +19,7 @@ class TipoEspacio extends Model
 
     /**
      * Obtener las características asociadas al tipo de espacio
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany  
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Caracteristica>
      */
 
     public function caracteristicas()
