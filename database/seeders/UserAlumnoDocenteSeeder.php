@@ -15,7 +15,8 @@ class UserAlumnoDocenteSeeder extends Seeder
 
         // Se crea un usuario general (Alumno)
         $general = \App\Models\User::create([
-            'name' => 'General',
+            'name' => 'Luis De la Cruz',
+            'sid' => 'l.cruza',
             'tipo' => 'general',
             'email' => 'general@uah.es',
             'password' => bcrypt('12345678'),
@@ -26,6 +27,7 @@ class UserAlumnoDocenteSeeder extends Seeder
         // Se crea un usuario responsable (Docente)
         $responsable = \App\Models\User::create([
             'name' => 'Responsable',
+            'sid' => 'r.esponsable',
             'tipo' => 'responsable',
             'email' => 'docente@uah.es',
             'password' => bcrypt('12345678'),
@@ -36,6 +38,7 @@ class UserAlumnoDocenteSeeder extends Seeder
         // Se crea un usuario administrador
         $administrador = \App\Models\User::create([
             'name' => 'Administrador',
+            'sid' => 'a.dministrador',
             'tipo' => 'administrador',
             'email' => 'admin@uah.es',
             'password' => bcrypt('12345678'),
