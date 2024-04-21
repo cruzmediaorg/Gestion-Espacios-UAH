@@ -34,7 +34,7 @@ export default function Authenticated({ user, header, children }) {
 
     return (
         <div className="min-h-screen flex bg-gray-100">
-            <div className='flex h-[100vh] w-60 bg-uahBlue items-center flex-col'>
+            <div className='flex h-[100vh] w-60 bg-uahBlue items-center flex-col relative'>
                 <Link href='/'>
                     <ApplicationLogo className='h-14 mt-8 mb-12' />
                 </Link>
@@ -65,6 +65,16 @@ export default function Authenticated({ user, header, children }) {
                         <Table size='24' />
                         Gestión</NavLink>
                 </nav>
+
+                <div className='flex flex-col items-center bg-white justify-center w-full absolute bottom-0'>
+                    <div className='w-10 h-10 bg-uahBlue rounded-full mt-4'></div>
+                    <p className='text-uahBlue mt-2'>{user.name}</p>
+                    <p className='text-uahBlue mt-2'>{user.email}</p>
+
+                    <Link href='/logout' method='post' as='button' className='bg-uahBlue  mb-4  px-4 py-2 rounded-sm text-white mt-4'>Cerrar sesión</Link>
+                </div>
+
+
             </div>
 
             <main className="h-[100vh] overflow-y-scroll max-w-screen-xl w-full p-12">

@@ -26,8 +26,10 @@ class CalendarioController extends Controller
         }
 
         if ($request->has('localizacion')) {
-            $localizacion = $request->localizacion;
-            $espacios = $espacios->whereIn('localizacion_id', $localizacion);
+            if ($request->localizacion !== 'all') {
+                $localizacion = $request->localizacion;
+                $espacios = $espacios->whereIn('localizacion_id', $localizacion);
+            }
         }
 
         $reservas = Reserva::where('reservable_type', 'App\Models\Espacio')

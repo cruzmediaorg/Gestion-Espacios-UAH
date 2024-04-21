@@ -29,9 +29,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $user = Auth::guard('web')->attempt($request->only('sid', 'password'), $request->boolean('remember'));
+
+        if (!$user) {
+            return back()->withErrors([
+                'sid' => 'The provided credentials do not match our records.',
+            ]);
+        }
 
         $request->session()->regenerate();
+
+
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

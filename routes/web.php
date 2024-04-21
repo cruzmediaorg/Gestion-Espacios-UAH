@@ -23,8 +23,9 @@ Route::get('/test', function () {
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
+    } else {
+        return redirect()->route('login');
     }
-    return Inertia::render('Welcome');
 })->name('welcome');
 
 
