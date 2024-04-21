@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('localizacion_id')->references('id')->on('localizaciones')->cascadeOnDelete();
             $table->foreignId('tiposespacios_id')->constrained()->cascadeOnDelete();
             $table->bigInteger('capacidad');
+            $table->string('codigo')->unique();
             $table->timestamps();
             $table->softDeletes();
         });

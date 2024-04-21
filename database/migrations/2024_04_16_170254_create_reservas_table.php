@@ -1,8 +1,8 @@
 <?php
 
-use App\Estado;
-use App\Estados;
+
 use App\Models\Reserva;
+use App\ReservaType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -29,6 +29,7 @@ return new class extends Migration
             $table->dateTime('fecha_cancelacion')->nullable();
             $table->unsignedBigInteger('cancelado_por')->nullable();
             $table->foreign('cancelado_por')->references('id')->on('users')->cascadeOnDelete();
+            $table->enum('type', [ReservaType::ClasePractica->value, ReservaType::ClaseTeorica->value, ReservaType::TFGTFM->value, ReservaType::Examen->value, ReservaType::Conferencia->value, ReservaType::Reunion->value, ReservaType::ConsejoDpt->value, ReservaType::Otro->value])->default(ReservaType::Otro->value);
             $table->timestamps();
             $table->softDeletes();
         });

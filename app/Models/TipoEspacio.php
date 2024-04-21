@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $nombre
+ * @property string $color
+ */
 class TipoEspacio extends Model
 {
     const TABLA = 'tiposEspacios';
@@ -15,6 +19,7 @@ class TipoEspacio extends Model
 
     protected $fillable = [
         'nombre',
+        'color',
     ];
 
     /**

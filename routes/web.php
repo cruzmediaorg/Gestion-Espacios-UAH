@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AsignaturaGradoController;
+use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\EspacioController;
 use App\Http\Controllers\EquipamientoEspacioController;
 use App\Http\Controllers\GradoController;
@@ -33,6 +34,11 @@ Route::get('/', function () {
 Route::resource('reservas', ReservaController::class)->middleware(['auth', 'verified']);
 
 /*
+ * Rutas para el calendario
+ */
+
+Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario');
+/*
 * Rutas para las gestiones de control
 */
 Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
@@ -42,6 +48,7 @@ Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('usuarios', UsuarioController::class);
     Route::resource('roles', RoleController::class);
+
     /*
     * Rutas para los grados
     */

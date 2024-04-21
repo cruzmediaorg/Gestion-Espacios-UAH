@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create(TipoEspacio::TABLA, function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('color')->default('000000');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -50,7 +50,8 @@ class LocalizacionesTipoEquipamientoEspaciosSeeder extends Seeder
 
         foreach (self::TIPOS as $tipo) {
             \App\Models\TipoEspacio::create([
-                'nombre' => $tipo
+                'nombre' => $tipo,
+                'color' => $this->randomColor()
             ]);
         }
 
@@ -59,5 +60,14 @@ class LocalizacionesTipoEquipamientoEspaciosSeeder extends Seeder
                 'nombre' => $equipamiento
             ]);
         }
+    }
+
+    /** 
+     * Generador de colores aleatorios
+     * @return string
+     */
+    private function randomColor(): string
+    {
+        return sprintf('%06X', mt_rand(0, 0xFFFFFF));
     }
 }

@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property array $horariosOcupados
  * @property string $nombre
  * @property int $capacidad
+ * @property int $localizacion_id
+ * @property int $tiposespacios_id
+ * @property string $codigo
+ * @property TipoEspacio $tipoEspacio
+ * @property Localizacion $localizacion
  */
 class Espacio extends Model
 {

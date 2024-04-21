@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $reservable_id
  * @property string $reservable_type
  * @property User $usuario
+ * @property Type $type
  */
 class Reserva extends Model
 {
@@ -36,7 +37,8 @@ class Reserva extends Model
         'fecha_aprobacion',
         'fecha_rechazo',
         'fecha_cancelacion',
-        'cancelado_por'
+        'cancelado_por',
+        'type'
     ];
     /**
      * Get the model that owns the reserva.
