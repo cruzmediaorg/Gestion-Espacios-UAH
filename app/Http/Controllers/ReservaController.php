@@ -52,14 +52,10 @@ class ReservaController extends Controller
      */
     public function store(ReservaRequest $request): RedirectResponse
     {
-        // "horas" => "19:00 - 20:00"
-
         $horas = explode(' - ', $request->horas);
         $hora_inicio = $horas[0];
         $hora_fin = $horas[1];
         $fecha = Carbon::parse($request->fecha);
-
-
 
         // Verificar que la fecha no sea menor a la actual
         if ($fecha < now()) {
@@ -74,6 +70,7 @@ class ReservaController extends Controller
             'hora_inicio' => $hora_inicio,
             'hora_fin' => $hora_fin,
             'comentario' => $request->comentario,
+            'type' => $request->tipo_reserva,
         ]);
 
         return redirect()->route('reservas.index');

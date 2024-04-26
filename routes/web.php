@@ -8,6 +8,7 @@ use App\Http\Controllers\GradoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TipoTareaController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -49,6 +50,14 @@ Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('usuarios', UsuarioController::class);
     Route::resource('roles', RoleController::class);
+
+    /*
+    Rutas para las tareas
+    */
+    Route::get('tareas', [TipoTareaController::class, 'index'])->name('tareas.index');
+    Route::get('tareas/{id}/listas', [TipoTareaController::class, 'listas'])->name('tareas.listas');
+    Route::get('tareas/{id}/crear', [TipoTareaController::class, 'create'])->name('tareas.create');
+    Route::post('tareas/{id}/ejecutar', [TipoTareaController::class, 'ejecutar'])->name('tareas.ejecutar');
 
     /*
     * Rutas para los grados

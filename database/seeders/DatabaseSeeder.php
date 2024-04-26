@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             AsignaturaSeeder::class,
             UserAlumnoDocenteSeeder::class,
             UsuariosRandomSeeder::class,
+            PeriodoSeeder::class,
             CursoSeeder::class,
             HorarioSeeder::class,
             LocalizacionesTipoEquipamientoEspaciosSeeder::class,

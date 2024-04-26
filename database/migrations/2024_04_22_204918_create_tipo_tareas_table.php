@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Horario;
+use App\Models\TipoTarea;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,13 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(Horario::TABLA, function (Blueprint $table) {
+        Schema::create(TipoTarea::TABLA, function (Blueprint $table) {
             $table->id();
-            $table->date('fecha');
-            $table->time('hora_inicio');
-            $table->time('hora_fin');
-            $table->foreignId('curso_id')->constrained()->cascadeOnDelete();
-            $table->boolean('es_online')->default(false);
+            $table->string('nombre');
+            $table->string('alias')->unique();
+            $table->string('descripcion')->nullable();
+            $table->string('clasePHP')->nullable();
+            $table->string('periocidad')->nullable();
+            $table->json('parametros_requeridos')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(Horario::TABLA);
+        Schema::dropIfExists(TipoTarea::TABLA);
     }
 };

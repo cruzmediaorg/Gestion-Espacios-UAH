@@ -50,6 +50,14 @@ export default function Dashboard({ auth }) {
                     </p>
                     <Link href="/users" className="mt-4 bg-uahBlue text-white px-4 py-2 ">Gestionar</Link>
                 </div>
+                <div className="p-4 border h-48 flex flex-col justify-center items-center hover:bg-gray-50">
+                    <Space size="48" />
+                    <h2 className="text-2xl font-semibold">Tareas</h2>
+                    <p className="text-gray-600">
+                        Gestión de tareas automatizadas
+                    </p>
+                    <Link href="/control/tareas" className="mt-4 bg-uahBlue text-white px-4 py-2 ">Gestionar</Link>
+                </div>
             </div>
         </AuthenticatedLayout >
     );

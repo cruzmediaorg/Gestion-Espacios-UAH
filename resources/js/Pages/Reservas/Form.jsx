@@ -32,6 +32,16 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
 
     const [selectedEspacio, setSelectedEspacio] = React.useState(null);
 
+    const reservasTypes = [
+        'Clase Práctica',
+        'Clase Teórica',
+        'TFG/TFM',
+        'Reunión',
+        'Examen',
+        'Conferencia',
+        'Consejo de Departamento',
+        'Otro',
+    ];
     const reservableTypes = [
         {
             value: 'App\\Models\\Espacio',
@@ -49,7 +59,8 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
         reservable_type: isEdit ? reserva.reservable_type : reservableTypes[0].value,
         asignado_a: isEdit ? reserva.asignado_a.id : '',
         fecha: isEdit ? reserva.fecha : '',
-        horas: reserva.horas || ''
+        horas: reserva.horas || '',
+        tipo_reserva: isEdit ? reserva.tipo_reserva : reservasTypes[0],
     })
 
 
@@ -84,7 +95,7 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
         if (selectedEspacio) {
             const horariosOcupados = selectedEspacio.horarios_ocupados;
 
-            const fecha = format(data.fecha, 'yyyy-MM-dd');
+            const fecha = new Date(data.fecha).toISOString().split('T')[0];
 
             const horasOcupadas = horariosOcupados.filter(horario => horario.fecha === fecha);
 
@@ -279,7 +290,7 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
                             mode="single"
                             selected={data.fecha}
                             onSelect={(date) => {
-                                setData("fecha", date);
+                                setData("fecha", new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString());
                             }}
                             initialFocus
                         />
@@ -329,6 +340,20 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
                 {
                     errors.horas && <span className="text-red-500">{errors.horas}</span>
                 }
+
+                <Label className="mt-2">Tipo de reserva</Label>
+                <div className="grid grid-cols-2 gap-2">
+                    {reservasTypes.map((type, index) => (
+                        <Button
+                            type="button"
+                            key={index}
+                            variant={data.tipo_reserva === type ? 'blue' : 'outline'}
+                            onClick={() => setData('tipo_reserva', type)}
+                        >
+                            {type}
+                        </Button>
+                    ))}
+                </div>
                 <Button type="submit" variant="blue" loading={processing}> {isEdit ? 'Guardar cambios' : 'Crear reserva'}</Button>
             </div>
         </form>

@@ -49,4 +49,13 @@ class Curso extends Model
     {
         return $this->hasMany(Horario::class);
     }
+
+    /**
+     * Obtener el periodo de un curso
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function periodo()
+    {
+        return $this->belongsTo(Periodo::class);
+    }
 }

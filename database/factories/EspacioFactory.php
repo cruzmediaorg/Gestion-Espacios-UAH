@@ -70,7 +70,7 @@ class EspacioFactory extends Factory
                 break;
         }
 
-        $codigo .= $this->faker->unique()->numberBetween(1, 999);
+        $codigo .= $this->faker->unique()->numberBetween(1, 50000000);
 
 
         return $codigo;

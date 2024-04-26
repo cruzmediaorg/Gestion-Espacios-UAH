@@ -24,7 +24,7 @@ class AsignaturaGrado extends Model
 
     protected $table = self::TABLA;
 
-    protected $fillable = ['asignatura_id', 'grado_id'];
+    protected $fillable = ['asignatura_id', 'grado_id', 'periocidad_id'];
 
     /**
      * Obtiene la asignatura a la que pertenece el grado

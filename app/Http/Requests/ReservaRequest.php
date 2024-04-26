@@ -28,6 +28,7 @@ class ReservaRequest extends FormRequest
             'fecha' => ['required', 'date'],
             'horas' => ['required'],
             'comentario' => ['nullable', 'string'],
+            'tipo_reserva' => 'required',
         ];
     }
 

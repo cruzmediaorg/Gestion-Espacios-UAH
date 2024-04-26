@@ -33,7 +33,6 @@ class PoblarEspaciosEquipamientos extends Seeder
 
             foreach ($equipamientos as $equipamiento) {
                 if ($espacio->tipoEspacio->nombre == 'Laboratorio') {
-                    Log::debug('Espacio ID: ' . $espacio->id . ' Tipo Espacio: ' . $espacio->tipoEspacio->nombre . ' Equipamiento: ' . $equipamiento->nombre);
                     if ($equipamiento->nombre == 'Puestos con ordenador') {
                         EquipamientoEspacio::create([
                             'espacio_id' => $espacio->id,
