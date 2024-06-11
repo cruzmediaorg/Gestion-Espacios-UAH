@@ -33,13 +33,20 @@ class AuthenticatedSessionController extends Controller
 
         if (!$user) {
             return back()->withErrors([
-                'sid' => 'The provided credentials do not match our records.',
+                'sid' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
             ]);
         }
 
+
+        $user = Auth::guard('web')->user();
+
+        activity()
+            ->causedBy($user)
+            ->withProperties(['ip' => $request->ip(), 'user_agent' => $request->userAgent(), 'session_id' => $request->session()->getId()])
+            ->tap(fn ($activity) => $activity->log_name = 'login')
+            ->log('El usuario ' . $user->sid . ' ha iniciado sesión.');
+
         $request->session()->regenerate();
-
-
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

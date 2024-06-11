@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @property Carbon $fecha_cancelacion
@@ -19,12 +21,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $reservable_id
  * @property string $reservable_type
  * @property User $usuario
- * @property Type $type
+ * @property string $type
  */
 class Reserva extends Model
 {
     const TABLA = 'reservas';
-    use HasFactory, SoftDeletes;
+    const ROUTE_PREFIX = 'reservas';
+
+    use  SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'reservable_id',
@@ -40,10 +44,26 @@ class Reserva extends Model
         'cancelado_por',
         'type'
     ];
+
+    protected static $logName = 'reservas';
+
     /**
-     * Get the model that owns the reserva.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * Opciones de configuración para el log de actividad
+     */
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn (string $eventName) => "La reserva #" . $this->id . " (" . $this->reservable->nombre . ")
+               ha sido " . __('messages.' . $eventName))
+            ->useLogName('reservas')
+            ->logOnly(['reservable_id', 'reservable_type', 'asignado_a', 'fecha', 'hora_inicio', 'hora_fin', 'comentario', 'fecha_aprobacion', 'fecha_rechazo', 'fecha_cancelacion', 'cancelado_por', 'type']);
+    }
+
+    /**
+     * Obtener el modelo al que se le asignó la reserva.
+     *
+     * @return MorphTo
      */
     public function reservable(): MorphTo
     {

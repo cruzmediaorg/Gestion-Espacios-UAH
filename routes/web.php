@@ -31,6 +31,13 @@ Route::get('/', function () {
 
 
 /*
+ * Ruta para los logs
+ */
+
+Route::get('/logs', [\App\Http\Controllers\ActivityLogController::class, '__invoke'])->name('logs');
+
+
+/*
 * Rutas para las reservas
 */
 Route::resource('reservas', ReservaController::class)->middleware(['auth', 'verified']);
