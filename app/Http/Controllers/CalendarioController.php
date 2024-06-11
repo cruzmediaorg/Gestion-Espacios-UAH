@@ -44,6 +44,7 @@ class CalendarioController extends Controller
             'tipo' => $request->tipo ?? null,
             'localizacion' => $request->localizacion ?? null,
             'localizaciones' => $localizaciones,
+            'clave' => config('services.calendar.sync_key'),
         ]);
     }
 }

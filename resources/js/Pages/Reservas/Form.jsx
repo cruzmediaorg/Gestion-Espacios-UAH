@@ -42,14 +42,15 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
         'Consejo de Departamento',
         'Otro',
     ];
+
     const reservableTypes = [
         {
             value: 'App\\Models\\Espacio',
             label: 'Espacio'
         },
         {
-            value: 'App\\Models\\Recurso',
-            label: 'Recurso'
+            value: 'App\\Models\\Equipamiento',
+            label: 'Equipamientos'
         }
     ];
 

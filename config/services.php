@@ -31,4 +31,8 @@ return [
         ],
     ],
 
+    'calendar' => [
+        'sync_key' => env('SYNC_FUSION_LICENSE_KEY'),
+    ],
+
 ];

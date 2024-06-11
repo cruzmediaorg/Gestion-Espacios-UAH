@@ -3,18 +3,17 @@ import './index.css';
 import { extend, isNullOrUndefined } from '@syncfusion/ej2-base';
 import { useEffect, useRef, useState } from 'react';
 import { registerLicense } from '@syncfusion/ej2-base';
-
-registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCe0x0RHxbf1x0ZFJMY19bRHBPMyBoS35RckVnW35ed3BWRmNVVU1/');
 import { router } from "@inertiajs/react";
 import { ScheduleComponent, ViewsDirective, ViewDirective, TimelineViews, Inject, ResourcesDirective, ResourceDirective, Resize, DragAndDrop } from '@syncfusion/ej2-react-schedule';
-export default function Calendario({ auth, espacios, reservas, tipo, localizacion, localizaciones = {} }) {
+export default function Calendario({ auth, espacios, reservas, tipo, localizacion, localizaciones = {}, clave }) {
 
+    registerLicense(clave);
     const data = extend([], reservas, null, true);
     const [startTime, setStartTime] = useState('08:00');
     const [endTime, setEndTime] = useState('22:00');
     const [startHour, setStartHour] = useState(startTime);
     const [endHour, setEndHour] = useState(endTime);
-    const [selectedDate, setSelectedDate] = useState(new Date(2024, 3, 21));
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     let scheduleObj = useRef(null);
 

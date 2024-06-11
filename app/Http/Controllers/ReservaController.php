@@ -107,7 +107,6 @@ class ReservaController extends Controller
         //sumale 1 dia a la fecha
         $fecha = (Carbon::parse($request->fecha));
 
-
         // Verificar que la fecha no sea menor a la actual
         if ($fecha < now()) {
             return redirect()->back()->withErrors(['fecha' => 'La fecha no puede ser menor a la actual']);
@@ -131,6 +130,7 @@ class ReservaController extends Controller
             'fecha' => $fecha,
             'hora_inicio' => $hora_inicio,
             'hora_fin' => $hora_fin,
+            'type' => $request->tipo_reserva,
             'comentario' => $request->comentario,
         ]);
 
