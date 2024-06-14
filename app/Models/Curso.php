@@ -2,59 +2,53 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Curso extends Model
 {
     const TABLA = 'cursos';
 
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $table = self::TABLA;
 
     /**
      * Obtener las asignaturas de un curso
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return BelongsTo
      */
-    public function asignaturas()
+    public function asignatura(): BelongsTo
     {
-        return $this->hasMany(Asignatura::class);
+        return $this->belongsTo(Asignatura::class);
     }
 
     /**
-     * Obtener el docente de un curso
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Obtener los docentes de un curso
+     * Tabla pivot curso_docente
+     * @return BelongsToMany
      */
-    public function docente()
+    public function docentes(): BelongsToMany
     {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Obtener los alumnos de un curso
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function alumnos()
-    {
-        return $this->belongsToMany(User::class, 'alumno_curso', 'curso_id', 'alumno_id');
+        return $this->belongsToMany(User::class, 'curso_docente', 'curso_id', 'docente_id');
     }
 
     /**
      * Obtener los horarios de un curso
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function horarios()
+    public function horarios(): HasMany
     {
         return $this->hasMany(Horario::class);
     }
 
     /**
      * Obtener el periodo de un curso
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function periodo()
+    public function periodo(): BelongsTo
     {
         return $this->belongsTo(Periodo::class);
     }

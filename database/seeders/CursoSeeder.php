@@ -8,6 +8,7 @@ use App\Models\Periodo;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class CursoSeeder extends Seeder
 {
@@ -25,22 +26,29 @@ class CursoSeeder extends Seeder
             ->with("asignaturas")
             ->first();
 
+
+
+        $docentes = User::where("tipo", "responsable")->get();
+
         // Se crea un curso por cada asignatura del grado para el año 2024
         foreach ($grado->asignaturas as $asignatura) {
             $curso = Curso::create([
                 "nombre" => $asignatura->nombre . " - " . $grado->nombre,
                 "periodo_id" => Periodo::where("nombre", "2024-2025")->first()->id,
                 "asignatura_id" => $asignatura->id,
-                "docente_id" => User::where("name", "Responsable")->first()->id,
                 "dias" => "V",
                 "hora_inicio" => "16:00:00",
                 "hora_fin" => "21:00:00",
-                "cantidad_horas" => 10
+                "cantidad_horas" => 10,
+                "alumnos_matriculados" => rand(20, 50),
             ]);
 
-            $alumnos = User::where("tipo", "general")->get();
+            // Seleccionar aleatoriamente 1 o 2 docentes
+            $numDocentes = rand(1, 2);
+            $docentesSeleccionados = $docentes->random($numDocentes);
 
-            $curso->alumnos()->attach($alumnos);
+            // Asignar los docentes al curso
+            $curso->docentes()->attach($docentesSeleccionados);
         }
     }
 }

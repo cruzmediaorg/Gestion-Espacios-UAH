@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Tarea;
 use App\Models\TipoTarea;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class TipoTareaController extends Controller
@@ -50,19 +50,19 @@ class TipoTareaController extends Controller
 
     /**
      * Ejecuta una tarea
+     * @param Request $request
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
 
-    public function ejecutar(Request $request, $id)
+    public function ejecutar(Request $request, int $id)
     {
 
         $tipoTarea = TipoTarea::findOrfail($id);
-        $parametros = null;
 
         // Si la tarea requiere parámetros, se validan
         if ($tipoTarea->parametros_requeridos) {
-            $parametros = $request->validate([
+            $request->validate([
                 'parametros' => 'required|array',
                 'parametros.*' => 'required'
             ]);

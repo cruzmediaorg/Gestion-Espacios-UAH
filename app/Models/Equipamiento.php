@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Equipamiento extends Model
 {
     const TABLA = 'equipamientos';
 
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $table = self::TABLA;
 
@@ -22,10 +22,9 @@ class Equipamiento extends Model
 
     /**
      * Obtener los espacios asociados al equipamiento
-     * BelongsToMany
+     * @return BelongsToMany
      */
-
-    public function espacios()
+    public function espacios(): BelongsToMany
     {
         return $this->belongsToMany(Espacio::class);
     }

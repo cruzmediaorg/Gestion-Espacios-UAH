@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tarea extends Model
 {
     const TABLA = 'Tarea';
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'tareas';
 
@@ -23,7 +23,10 @@ class Tarea extends Model
 
     ];
 
-    public function tipoTarea()
+    /**
+     * @return BelongsTo
+     */
+    public function tipoTarea(): BelongsTo
     {
         return $this->belongsTo(TipoTarea::class);
     }

@@ -1,10 +1,6 @@
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/Components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import { Badge } from "@/Components/ui/badge"
-import Checkbox from "@/Components/Checkbox"
-import { router } from "@inertiajs/react"
+
 export type Log = {
     log_name: string,
     description: string,

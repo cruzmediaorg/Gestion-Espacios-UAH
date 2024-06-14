@@ -22,6 +22,20 @@ class PermissionSeeder extends Seeder
             'Ver roles',
             'Actualizar roles',
             'Eliminar roles',
+            'Crear espacios',
+            'Ver espacios',
+            'Editar espacios',
+            'Crear grados',
+            'Ver grados',
+            'Editar grados',
+            'Crear asignaturas',
+            'Ver asignaturas',
+            'Editar asignaturas',
+            'Crear cursos',
+            'Ver cursos',
+            'Editar cursos',
+            'Gestionar tareas automatizadas',
+            'Ver logs',
         ];
 
         foreach ($permissions as $permission) {
@@ -30,5 +44,12 @@ class PermissionSeeder extends Seeder
 
         $role = Role::where('name', 'Administrador')->first();
         $role->syncPermissions(\Spatie\Permission\Models\Permission::all());
+
+        $role = Role::where('name', 'Responsable')->first();
+
+        $role->syncPermissions([
+            'Ver cursos',
+            'Ver asignaturas',
+        ]);
     }
 }

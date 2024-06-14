@@ -8,13 +8,15 @@ use App\Models\Grado;
 use App\Models\TipoGrado;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
+use Random\RandomException;
 
 class GradoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         $grados = Grado::all();
 
@@ -26,7 +28,7 @@ class GradoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
 
         return Inertia::render('Control/Grados/Form', [
@@ -72,7 +74,11 @@ class GradoController extends Controller
     {
 
         $code = 'UAH-' . $prefijo;
-        $code .= '-' . random_int(1000, 9999);
+        try {
+            $code .= '-' . random_int(1000, 9999);
+        } catch (RandomException) {
+            $code .= '-0000';
+        }
 
         return $code;
     }

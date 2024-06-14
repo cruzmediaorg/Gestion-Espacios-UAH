@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TipoEspacio extends Model
 {
     const TABLA = 'tiposEspacios';
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $table = self::TABLA;
 
@@ -24,10 +24,9 @@ class TipoEspacio extends Model
 
     /**
      * Obtener las características asociadas al tipo de espacio
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Caracteristica>
+     * @return BelongsToMany<Caracteristica>
      */
-
-    public function caracteristicas()
+    public function caracteristicas(): BelongsToMany
     {
         return $this->belongsToMany(Caracteristica::class, 'caracteristica_tipoespacio', 'tiposespacios_id', 'caracteristica_id');
     }

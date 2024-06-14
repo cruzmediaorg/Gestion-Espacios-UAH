@@ -32,9 +32,11 @@ class CalendarioController extends Controller
             }
         }
 
+
         $reservas = Reserva::where('reservable_type', 'App\Models\Espacio')
-            ->whereIn('reservable_id', $espacios->pluck('id'))
-            ->get();
+                ->whereIn('reservable_id', $espacios->pluck('id'))
+                ->segunUsuario()
+                ->get();
 
         $localizaciones = Localizacion::all()->pluck('nombre', 'id');
 

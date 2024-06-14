@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AsignaturaGradoController;
 use App\Http\Controllers\CalendarioController;
+use App\Http\Controllers\CursoController;
 use App\Http\Controllers\EspacioController;
 use App\Http\Controllers\EquipamientoEspacioController;
 use App\Http\Controllers\GradoController;
@@ -14,13 +16,6 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
-
-Route::get('/test', function () {
-    $espacio = App\Models\Grado::find(48);
-
-    return $espacio->asignaturas()->get();
-})->name('test');
-
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
@@ -30,12 +25,19 @@ Route::get('/', function () {
 })->name('welcome');
 
 
+
+/*
+ * Rutas para los usuarios sin permisos
+ */
+Route::get('/sin-permisos', function () {
+     abort(401);
+})->name('sin-permisos');
+
 /*
  * Ruta para los logs
  */
 
-Route::get('/logs', [\App\Http\Controllers\ActivityLogController::class, '__invoke'])->name('logs');
-
+Route::get('/logs', [ActivityLogController::class, '__invoke'])->name('logs');
 
 /*
 * Rutas para las reservas
@@ -57,6 +59,11 @@ Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('usuarios', UsuarioController::class);
     Route::resource('roles', RoleController::class);
+
+    /*
+     * Rutas para los cursos
+     */
+    Route::resource('cursos', CursoController::class);
 
     /*
     Rutas para las tareas

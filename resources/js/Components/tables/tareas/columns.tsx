@@ -3,16 +3,19 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/Components/ui/button"
 import Checkbox from "@/Components/Checkbox"
 import { router } from "@inertiajs/react"
-export type Tarea = {
+export type Curso = {
     id: string
     nombre: string,
-    fecha_inicio: string,
-    fecha_fin: string,
-    estado: string,
-    resultado: string,
+    periodo: string,
+    asignatura: string,
+    dias: string,
+    hora_inicio: string,
+    hora_fin: string,
+    cantidad_horas: string,
+    alumnos_matriculados: string,
 }
 
-export const columns: ColumnDef<Tarea>[] = [
+export const columns: ColumnDef<Curso>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -41,21 +44,14 @@ export const columns: ColumnDef<Tarea>[] = [
 
     {
         header: 'Fecha de inicio',
-        accessorKey: 'fecha_inicio',
+        accessorKey: 'hora_inicio',
     },
     {
         header: 'Fecha de fin',
-        accessorKey: 'fecha_fin',
-    },
-    {
-        header: 'Estado',
-        accessorKey: 'estado',
+        accessorKey: 'hora_fin',
     },
     {
         header: 'Resultado',
         accessorKey: 'resultado'
     },
-
-
-
 ]

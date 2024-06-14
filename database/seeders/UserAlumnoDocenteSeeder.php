@@ -33,6 +33,15 @@ class UserAlumnoDocenteSeeder extends Seeder
             'password' => bcrypt('12345678'),
         ]);
 
+        // Se crea un usuario responsable (Docente 2)
+        $responsable = \App\Models\User::create([
+            'name' => 'Responsable 2',
+            'sid' => 'r.esponsable.2',
+            'tipo' => 'responsable',
+            'email' => 'docente2@uah.es',
+            'password' => bcrypt('12345678'),
+        ]);
+
         $responsable->assignRole('responsable');
 
         // Se crea un usuario administrador

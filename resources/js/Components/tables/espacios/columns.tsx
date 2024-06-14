@@ -1,15 +1,20 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/Components/ui/button"
-import { ArrowUpDown } from "lucide-react"
 import { Badge } from "@/Components/ui/badge"
 import Checkbox from "@/Components/Checkbox"
 import { router } from "@inertiajs/react"
 export type Espacio = {
     id: string
     nombre: string
-    tipo: string
-    localizacion: string
+    tipo: {
+        id: string
+        nombre: string
+    }
+    localizacion: {
+        id: string
+        nombre: string
+    }
 }
 
 export const columns: ColumnDef<Espacio>[] = [

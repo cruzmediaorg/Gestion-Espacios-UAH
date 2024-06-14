@@ -80,7 +80,7 @@ class AsignaturaGradoController extends Controller
             'grado_id' => 'required|exists:grados,id',
         ]);
 
-        $asignaturaGrado = AsignaturaGrado::find($id)->update($request->all());
+        AsignaturaGrado::find($id)->update($request->all());
 
         return redirect()->route('grados.edit', $validated['grado_id'])->with('success', 'Grado actualizado correctamente');
     }

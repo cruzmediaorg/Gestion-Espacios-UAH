@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -20,25 +21,25 @@ class Grado extends Model
 {
     const TABLA = 'grados';
 
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $fillable = ['nombre', 'tipoGrado_id', 'codigo'];
 
 
-    /*
+    /**
     * Obtiene el tipo de grado al que pertenece el grado
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    * @return HasOne
     */
-    public function tipoGrado()
+    public function tipoGrado(): HasOne
     {
         return $this->hasOne(TipoGrado::class, 'id', 'tipoGrado_id');
     }
 
     /**
      * Asignaturas que pertenecen a un grado
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function asignaturas()
+    public function asignaturas(): BelongsToMany
     {
         return $this->belongsToMany(Asignatura::class, 'asignatura_grado', 'grado_id', 'asignatura_id')->withPivot('id');
     }

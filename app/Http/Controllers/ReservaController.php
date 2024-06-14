@@ -11,20 +11,19 @@ use App\Models\Reserva;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ReservaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
-        $reservas = Reserva::all();
 
         return Inertia::render('Reservas/Index', [
-            'reservas' => ReservaResource::collection($reservas),
+            'reservas' => ReservaResource::collection(Reserva::segunUsuario()->get()),
             'openDrawer' => false,
         ]);
     }
@@ -32,18 +31,14 @@ class ReservaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
-        $espacios = Espacio::all();
-        $usuarios = User::all();
-        $recursos = Equipamiento::all();
-
         return Inertia::render('Reservas/Index', [
-            'reservas' => ReservaResource::collection(Reserva::all()),
+            'reservas' => ReservaResource::collection(Reserva::segunUsuario()->get()),
             'openDrawer' => true,
-            'espacios' => EspacioResource::collection($espacios),
-            'usuarios' => $usuarios,
-            'recursos' => $recursos,
+            'espacios' => EspacioResource::collection(Espacio::all()),
+            'usuarios' => User::segunUsuario()->get(),
+            'recursos' => Equipamiento::all(),
         ]);
     }
 
@@ -79,19 +74,15 @@ class ReservaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Reserva $reserva): \Inertia\Response
+    public function edit(Reserva $reserva): Response
     {
-        $espacios = Espacio::all();
-        $usuarios = User::all();
-        $recursos = Equipamiento::all();
-
         return Inertia::render('Reservas/Index', [
-            'reservas' => ReservaResource::collection(Reserva::all()),
+            'reservas' => ReservaResource::collection(Reserva::segunUsuario()->get()),
             'openDrawer' => true,
-            'espacios' => EspacioResource::collection($espacios),
-            'usuarios' => $usuarios,
+            'espacios' => EspacioResource::collection(Espacio::all()),
+            'usuarios' => User::segunUsuario()->get(),
             'reserva' => ReservaResource::make($reserva),
-            'recursos' => $recursos,
+            'recursos' => Equipamiento::all(),
             'isEdit' => true,
         ]);
     }

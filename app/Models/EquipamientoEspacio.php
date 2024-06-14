@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $espacio_id
@@ -14,7 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class EquipamientoEspacio extends Pivot
 {
     const TABLA = 'equipamiento_espacio';
-    use HasFactory;
 
     protected $table = self::TABLA;
 

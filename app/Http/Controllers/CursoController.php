@@ -3,16 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curso;
+use App\Models\Periodo;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CursoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        if ($request->user()->cannot('Ver cursos')) {
+                return redirect()->route('sin-permisos');
+        }
+
+        $docente = User::find($request->user()->id);
+        $cursos = $docente->cursos;
+
+        return Inertia::render('Control/Cursos/Index', [
+            'cursos' => $cursos->load(['asignatura', 'periodo'])->loadCount('docentes'),
+            'periodos' => Periodo::all()->pluck('nombre', 'id'),
+        ]);
     }
 
     /**

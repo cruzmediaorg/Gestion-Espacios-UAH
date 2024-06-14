@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -33,37 +36,37 @@ class Espacio extends Model
 
     /**
      * Obtener el tipo de espacio asociado al espacio
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function tipoEspacio()
+    public function tipoEspacio(): HasOne
     {
         return $this->hasOne(TipoEspacio::class, 'id', 'tiposespacios_id');
     }
 
     /**
      * Obtener la localización asociada al espacio
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function localizacion()
+    public function localizacion(): BelongsTo
     {
         return $this->belongsTo(Localizacion::class);
     }
 
     /**
      * Obtenemos los equipamientos asociados al espacio
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function equipamientos()
+    public function equipamientos(): Collection
     {
         return EquipamientoEspacio::where('espacio_id', $this->id)->with('equipamiento')->get();
     }
 
     /**
      * Obtener las reservas asociadas al espacio
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
 
-    public function reservas()
+    public function reservas(): MorphMany
     {
         return $this->morphMany(Reserva::class, 'reservable');
     }
@@ -71,11 +74,9 @@ class Espacio extends Model
     /**
      * Horarios ocupados por el espacio
      * Devuelve los horarios que no están disponibles para reservar
-     * 
      * @return array
      */
-
-    public function horariosOcupados()
+    public function horariosOcupados(): array
     {
         return $this->reservas->map(function ($reserva) {
             return [

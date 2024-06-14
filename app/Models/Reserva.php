@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -45,8 +47,6 @@ class Reserva extends Model
         'type'
     ];
 
-    protected static $logName = 'reservas';
-
     /**
      * Opciones de configuración para el log de actividad
      */
@@ -73,16 +73,18 @@ class Reserva extends Model
 
     /**
      * Obtener el usuario al que se le asignó la reserva
+     * @return BelongsTo
      */
-    public function usuario()
+    public function usuario(): BelongsTo
     {
         return $this->belongsTo(User::class, 'asignado_a');
     }
 
     /**
      * Obtener si la reserva está aprobada, o cancelada o rechazada
+     * @return string
      */
-    public function estado()
+    public function estado(): string
     {
         return match (true) {
             $this->fecha < now() => 'cerrada',
@@ -96,8 +98,11 @@ class Reserva extends Model
     /**
      * Scope para obtener las reservas de un usuario
      */
-    public function scopeDeUsuario($query, $usuario)
+    public function scopeSegunUsuario(Builder $query): void
     {
-        return $query->where('asignado_a', $usuario);
+        auth()->user()->hasRole('Administrador') ? $query : $query->where('asignado_a', auth()->id());
     }
+
+
+
 }
