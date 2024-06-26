@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 class RelateToAll extends Relation
 {
     private $catchAll;
-    private $ownerKey;
 
     public function __construct(Builder $query, Model $parent, $ownerKey, $catchAll = null)
     {
@@ -19,13 +18,12 @@ class RelateToAll extends Relation
           By default, it assumes that ID is numeric and is > 0
         */
         if (is_null($catchAll)) {
-            $catchAll = function($query) use ($ownerKey) {
+            $catchAll = function ($query) use ($ownerKey) {
                 $query->where($ownerKey, '>', 0);
             };
         }
 
         $this->related = $parent;
-        $this->ownerKey = $ownerKey;
         $this->catchAll = $catchAll;
 
         parent::__construct($query, $parent);
@@ -58,6 +56,7 @@ class RelateToAll extends Relation
 
     public function match(array $models, Collection $results, $relation)
     {
+        // @phpstan-ignore-next-line
         return $this->matchMany($models, $results, $relation);
     }
 
