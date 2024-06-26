@@ -7,6 +7,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\EspacioController;
 use App\Http\Controllers\EquipamientoEspacioController;
 use App\Http\Controllers\GradoController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\RoleController;
@@ -30,7 +31,7 @@ Route::get('/', function () {
  * Rutas para los usuarios sin permisos
  */
 Route::get('/sin-permisos', function () {
-     abort(401);
+    abort(401);
 })->name('sin-permisos');
 
 /*
@@ -52,6 +53,17 @@ Route::get('/calendario', [CalendarioController::class, 'index'])->name('calenda
 /*
 * Rutas para las gestiones de control
 */
+
+/*
+     * Rutas para las notificaciones
+     */
+
+Route::get('/notificaciones', [NotificationController::class, 'index'])->name('notificaciones');
+Route::get('/notificaciones/readed', [NotificationController::class, 'readedNotifications'])->name('notificaciones.leidas');
+Route::post('/notificaciones/{id}', [NotificationController::class, 'toggleRead'])->name('notificaciones.marcar-como-leida');
+Route::post('/notificaciones', [NotificationController::class, 'markAllAsRead'])->name('notificaciones.marcar-todas-como-leidas');
+
+
 Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
         return Inertia::render('Control/Index');

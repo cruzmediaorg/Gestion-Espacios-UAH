@@ -1,18 +1,36 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import NavLink from '@/Components/NavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { HomeIcon, Calendar, Check, Table } from 'lucide-react';
+import { HomeIcon, Calendar, Check, Table, Bell } from 'lucide-react';
 
 import { Toaster } from "@/Components/ui/toaster"
 import { useToast } from "@/Components/ui/use-toast"
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import ReactIf from "@/lib/ReactIf.jsx";
+
 
 export default function Authenticated({ user, header, children }) {
 
     const currentRoute = window.location.pathname;
 
     const page = usePage();
+    const [unreadNotifications, setUnreadNotifications] = useState(page.props.unreadNotifications?.length);
     const { toast } = useToast()
+
+    useEffect(() => {
+        Echo.channel(`users.${user.id}`)
+            .listen('NotificationCreatedEvent', (e) => {
+
+                setUnreadNotifications(unreadNotifications + 1)
+
+                toast({
+                    title: e.message,
+                    variant: e.tipo
+                })
+            }
+            );
+    }
+        , [])
 
 
     useEffect(() => {
@@ -64,6 +82,17 @@ export default function Authenticated({ user, header, children }) {
                     }>
                         <Table size='24' />
                         Gestión</NavLink>
+
+                    <NavLink href='/notificaciones' active={
+                        currentRoute.includes('notificaciones')
+                    }>
+                        <Bell size='24' />
+                        Notificaciones   <pre>
+                            <ReactIf condition={unreadNotifications > 0}>
+                                <span className='bg-red-500 text-white rounded-full text-xs font-bold py-2 flex justify-center items-center px-3
+                            '> {unreadNotifications}</span>
+                            </ReactIf>
+                        </pre></NavLink>
                 </nav>
 
                 <div className='flex flex-col items-center bg-white justify-center w-full absolute bottom-0'>
