@@ -65,6 +65,16 @@ class User extends Authenticatable
     }
 
     /**
+     * The channels the user receives notification broadcasts on.
+     *
+     * @return string
+     */
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'users.'.$this->id;
+    }
+
+    /**
      * Obtiene los cursos donde es docente.
      * @return BelongsToMany|RelateToAll
      */
@@ -97,6 +107,4 @@ class User extends Authenticatable
     {
         auth()->user()->hasRole('Administrador') ? $query : $query->where('id', auth()->id());
     }
-
-
 }

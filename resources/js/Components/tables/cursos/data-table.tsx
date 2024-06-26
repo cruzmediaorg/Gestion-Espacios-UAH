@@ -24,6 +24,8 @@ import {
 
 import { Input } from "@/Components/ui/input"
 
+import { router} from "@inertiajs/react";
+
 import { useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -69,7 +71,6 @@ export function DataTable<TData, TValue>({
             <div className="flex items-center justify-between w-full gap-2">
 
                 <div className="flex items-center py-4 w-full gap-2">
-                    {/* Filtro por tipo */}
                     <select className="px-4 rounded-md border py-2 w-fit" onChange={(event) => {
                         table.getColumn("periodo").setFilterValue(event.target.value)
                     }
@@ -89,6 +90,9 @@ export function DataTable<TData, TValue>({
                         className="max-w-sm w-full"
                     />
                 </div>
+                <Button onClick={() => router.visit(route('cursos.create'))}>
+                   Nuevo curso
+                </Button>
             </div>
             <div className=" border bg-white">
                 <Table>

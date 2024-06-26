@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.jsx';
-import { columns } from '@/Components/tables/tareas/columns.js';
-import { DataTable } from '@/Components/tables/tareas/data-table.js';
+import { columns } from '@/Components/tables/tareas/columns.tsx';
+import { DataTable } from '@/Components/tables/tareas/data-table.tsx';
 import { router } from '@inertiajs/react';
 
 export default function Index({ auth, tipoTarea, tareas }) {

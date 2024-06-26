@@ -20,10 +20,12 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string $hora_fin
  * @property string $comentario
  * @property int $cancelado_por
+ * @property int $asignado_a
  * @property int $reservable_id
  * @property string $reservable_type
  * @property User $usuario
  * @property string $type
+ * @property int $curso_id
  */
 class Reserva extends Model
 {
@@ -44,7 +46,8 @@ class Reserva extends Model
         'fecha_rechazo',
         'fecha_cancelacion',
         'cancelado_por',
-        'type'
+        'type',
+        'curso_id'
     ];
 
     /**
@@ -81,6 +84,15 @@ class Reserva extends Model
     }
 
     /**
+     * Obtener el curso al que pertenece la reserva
+     * @return BelongsTo
+     */
+    public function curso(): BelongsTo
+    {
+        return $this->belongsTo(Curso::class);
+    }
+
+    /**
      * Obtener si la reserva está aprobada, o cancelada o rechazada
      * @return string
      */
@@ -102,7 +114,4 @@ class Reserva extends Model
     {
         auth()->user()->hasRole('Administrador') ? $query : $query->where('asignado_a', auth()->id());
     }
-
-
-
 }

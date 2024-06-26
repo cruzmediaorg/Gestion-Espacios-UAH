@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $nombre
+ * @property string $codigo
+ * @property int $asignatura_id
+ * @property int $periodo_id
+ * @property int $alumnos_matriculados
+ */
 class Curso extends Model
 {
     const TABLA = 'cursos';
@@ -15,6 +23,8 @@ class Curso extends Model
     use SoftDeletes;
 
     protected $table = self::TABLA;
+
+    protected $guarded = [];
 
     /**
      * Obtener las asignaturas de un curso

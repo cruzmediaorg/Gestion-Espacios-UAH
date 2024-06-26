@@ -28,7 +28,7 @@ class TipoTareaController extends Controller
     public function listas($id)
     {
         $tipoTarea = TipoTarea::find($id);
-        $tareas = Tarea::where('tipo_tarea_id', $tipoTarea->id)->get();
+        $tareas = Tarea::where('tipo_tarea_id', $tipoTarea->id)->orderBy('fecha_inicio', 'desc')->get();
 
         return Inertia::render('Control/Tareas/Listas', [
             'tareas' => $tareas,

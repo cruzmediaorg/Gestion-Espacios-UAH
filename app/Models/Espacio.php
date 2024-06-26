@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -70,6 +71,17 @@ class Espacio extends Model
     {
         return $this->morphMany(Reserva::class, 'reservable');
     }
+    /**
+     * @return MorphToMany<Reserva>|MorphMany<Reserva>
+     */
+    public function reservasActivas()
+    {
+        return $this->reservas()
+            ->where('fecha', '>=', now()->format('Y-m-d'))
+            ->whereNull('deleted_at')
+            ->whereNull('fecha_rechazo')
+            ->whereNull('fecha_cancelacion');
+    }
 
     /**
      * Horarios ocupados por el espacio
@@ -78,7 +90,7 @@ class Espacio extends Model
      */
     public function horariosOcupados(): array
     {
-        return $this->reservas->map(function ($reserva) {
+        return $this->reservasActivas->map(function ($reserva) {
             return [
                 'fecha' => $reserva->fecha,
                 'hora_inicio' => $reserva->hora_inicio,
@@ -87,5 +99,32 @@ class Espacio extends Model
                 'asignado_a' => $reserva->usuario->name ?? 'No asignado',
             ];
         })->toArray();
+    }
+
+    public function disponibilidad(array $slots): array
+    {
+        $disponibilidad = [];
+
+        foreach ($slots as $slot) {
+            $fecha = $slot['fecha'];
+            $hora_inicio = $slot['hora_inicio'];
+            $hora_fin = $slot['hora_fin'];
+
+            $fecha = new \DateTime($fecha);
+            $fecha = $fecha->format('Y-m-d');
+
+            $reservas = $this->reservasActivas->filter(function ($reserva) use ($fecha, $hora_inicio, $hora_fin) {
+                return $reserva->fecha == $fecha && $reserva->hora_inicio == $hora_inicio && $reserva->hora_fin == $hora_fin;
+            });
+
+            $disponibilidad[] = [
+                'fecha' => $fecha,
+                'hora_inicio' => $hora_inicio,
+                'hora_fin' => $hora_fin,
+                'disponible' => $reservas->isEmpty(),
+            ];
+        }
+
+        return $disponibilidad;
     }
 }

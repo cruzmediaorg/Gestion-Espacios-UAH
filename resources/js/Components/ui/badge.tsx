@@ -21,6 +21,9 @@ const badgeVariants = cva(
         cancelada: "bg-red-500 text-white",
         rechazada: "bg-red-500 text-white",
         cerrada: "bg-black text-white",
+        error: "bg-red-500 text-white",
+          completado: "bg-green-500 text-white",
+          procesando: "bg-yellow-500 text-white",
       },
     },
     defaultVariants: {

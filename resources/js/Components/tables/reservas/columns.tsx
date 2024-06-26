@@ -13,6 +13,7 @@ export type Reserva = {
     hora_inicio: string
     hora_fin: string
     estado: string
+    curso: Curso
 }
 
 type Reservable = {
@@ -23,6 +24,11 @@ type Reservable = {
 type User = {
     id: string
     name: string
+}
+
+type Curso = {
+    id: string
+    nombre: string
 }
 
 export const columns: ColumnDef<Reserva>[] = [
@@ -55,6 +61,17 @@ export const columns: ColumnDef<Reserva>[] = [
             return (
                 <div className="flex items-center gap-2 w-40 text-xs overflow-hidden">
                     {row.getValue()}
+                </div>
+            )
+        }
+    },
+    {
+        header: 'Curso',
+        accessorKey: 'curso',
+        cell: (row) => {
+            return (
+                <div className="flex items-center gap-2">
+                    {row.row.original.curso?.nombre || '-'}
                 </div>
             )
         }

@@ -35,6 +35,7 @@ class ReservaResource extends JsonResource
             'cancelado_por' => $this->cancelado_por,
             'horas' => $this->hora_inicio . ' - ' . $this->hora_fin,
             'tipo_reserva' => $this->type,
+            'curso' => $this->curso,
         ];
     }
 }
