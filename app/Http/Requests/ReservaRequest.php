@@ -26,7 +26,8 @@ class ReservaRequest extends FormRequest
             'reservable_type' => ['required', 'string'],
             'asignado_a' => ['required', 'exists:users,id'],
             'fecha' => ['required', 'date'],
-            'horas' => ['required'],
+            'hora_inicio' => ['required'],
+            'hora_fin' => ['required'],
             'comentario' => ['nullable', 'string'],
             'tipo_reserva' => 'required',
         ];

@@ -16,7 +16,8 @@ class CalendarioController extends Controller
     public function index(Request $request)
     {
 
-        $espacios = Espacio::all();
+        $espacios = Espacio::whereHas('reservas')
+            ->get();
 
         if ($request->has('tipo')) {
             if ($request->tipo !== 'all') {
@@ -34,9 +35,9 @@ class CalendarioController extends Controller
 
 
         $reservas = Reserva::where('reservable_type', 'App\Models\Espacio')
-                ->whereIn('reservable_id', $espacios->pluck('id'))
-                ->segunUsuario()
-                ->get();
+            ->whereIn('reservable_id', $espacios->pluck('id'))
+            ->segunUsuario()
+            ->get();
 
         $localizaciones = Localizacion::all()->pluck('nombre', 'id');
 

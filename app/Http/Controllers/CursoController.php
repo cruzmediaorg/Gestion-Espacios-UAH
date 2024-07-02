@@ -27,11 +27,8 @@ class CursoController extends Controller
             return redirect()->route('sin-permisos');
         }
 
-        $docente = User::find($request->user()->id);
-        $cursos = $docente->cursos;
-
         return Inertia::render('Control/Cursos/Index', [
-            'cursos' => $cursos->load(['asignatura', 'periodo'])->loadCount('docentes'),
+            'cursos' => User::find($request->user()->id)->cursos->load(['asignatura', 'periodo'])->loadCount('docentes'),
             'periodos' => Periodo::all()->pluck('nombre', 'id'),
         ]);
     }
@@ -42,9 +39,7 @@ class CursoController extends Controller
     public function create()
     {
 
-        $users = User::where('tipo', 'responsable')->orderBy('name')->get();
-
-        $docentes = $users->map(function ($user) {
+        $docentes = User::where('tipo', 'responsable')->orderBy('name')->get()->map(function ($user) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -53,11 +48,9 @@ class CursoController extends Controller
         });
 
         // Ordenar y agregar el usuario actual al principio
-        $docentes = $docentes->sortBy('label')->values()->all();
-
         return Inertia::render('Control/Cursos/Create', [
             'periodos' => Periodo::all()->pluck('nombre', 'id'),
-            'docentes' => $docentes,
+            'docentes' => $docentes->sortBy('label')->values()->all(),
             'asignaturas' => Asignatura::all(),
         ]);
     }
@@ -111,6 +104,7 @@ class CursoController extends Controller
 
 
         $curso->docentes()->attach($docentes);
+
         $delay = now()->addSeconds(5);
         // Notificar a los docentes
         foreach ($docentes as $docente) {
@@ -140,35 +134,4 @@ class CursoController extends Controller
         return redirect()->route('cursos.index')->with('success', 'Curso creado con éxito');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Curso $curso)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Curso $curso)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Curso $curso)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Curso $curso)
-    {
-        //
-    }
 }

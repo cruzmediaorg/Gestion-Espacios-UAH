@@ -33,6 +33,7 @@ class Espacio extends Model
         'localizacion_id',
         'tiposespacios_id',
         'capacidad',
+        'codigo',
     ];
 
     /**
@@ -104,6 +105,7 @@ class Espacio extends Model
     public function disponibilidad(array $slots): array
     {
         $disponibilidad = [];
+
 
         foreach ($slots as $slot) {
             $fecha = $slot['fecha'];

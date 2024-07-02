@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import './index.css';
 import { extend, isNullOrUndefined } from '@syncfusion/ej2-base';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { registerLicense } from '@syncfusion/ej2-base';
 import { router } from "@inertiajs/react";
 import { ScheduleComponent, ViewsDirective, ViewDirective, TimelineViews, Inject, ResourcesDirective, ResourceDirective, Resize, DragAndDrop } from '@syncfusion/ej2-react-schedule';
@@ -15,6 +15,8 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
     const [endHour, setEndHour] = useState(endTime);
     const [selectedDate, setSelectedDate] = useState(new Date());
 
+
+
     let scheduleObj = useRef(null);
 
     const getCodigoEspacio = (value) => {
@@ -27,7 +29,7 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
         return value.resourceData.capacity;
     };
     const isReadOnly = (endDate) => {
-        return (endDate < new Date(2021, 6, 31, 0, 0));
+        return (endDate < new Date());
     };
     const resourceHeaderTemplate = (props) => {
         return (<div className="template-wrap">
@@ -51,7 +53,7 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
     };
     const onRenderCell = (args) => {
         if (args.element.classList.contains('e-work-cells')) {
-            if (args.date < new Date(2021, 6, 31, 0, 0)) {
+            if (!scheduleObj.current.isSlotAvailable(args.date)) {
                 args.element.setAttribute('aria-readonly', 'true');
                 args.element.classList.add('e-read-only-cells');
             }
@@ -94,8 +96,6 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
     }
 
 
-
-
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -114,9 +114,9 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
                         <option value="all">Todos</option>
                         <option value="laboratorio">Laboratorio</option>
                         <option value="aula">Aula</option>
-                        <option value="biblioteca">Biblioteca</option>
-                        <option value="auditorio">Auditorio</option>
-                        <option value="sala de reuniones">Sala de reuniones</option>
+                        <option value="Sala de Reuniones">Sala Reuniones</option>
+                        <option value="despacho">Despacho</option>
+                        <option value="sala de trabajo">Sala de trabajo</option>
                     </select>
 
                     <select className="form-select mt-4 block w-1/4"
@@ -145,9 +145,9 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
                             height='auto'
                             startHour={startHour}
                             endHour={endHour}
-                            selectedDate={selectedDate}
-                            workHours={{ start: '08:00', end: '18:00' }}
-                            timeScale={{ interval: 30, slotCount: 1 }}
+                            enablePersistence={true}
+                            workHours={{ start: '07:00', end: '21:00' }}
+                            timeScale={{ interval: 60, slotCount: 1 }}
                             resourceHeaderTemplate={resourceHeaderTemplate}
                             eventSettings={{
                                 dataSource: data,
@@ -164,7 +164,7 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
                             actionBegin={onActionBegin}
                             renderCell={onRenderCell}
                             group={{
-                                enableCompactView: false, resources: ['MeetingRoom']
+                                enableCompactView: true, resources: ['MeetingRoom']
                             }}>
                             <ResourcesDirective>
                                 <ResourceDirective field='RoomId' title='Room Type' name='MeetingRoom' allowMultiple={true} dataSource={espacios} textField='text' idField='id' colorField='color' />
@@ -173,7 +173,7 @@ export default function Calendario({ auth, espacios, reservas, tipo, localizacio
                                 <ViewDirective option='TimelineDay' dateFormat="d-MM-y" />
                                 <ViewDirective option='TimelineWeek' />
                             </ViewsDirective>
-                            <Inject services={[TimelineViews, Resize, DragAndDrop]} />
+                            <Inject services={[TimelineViews]} />
                         </ScheduleComponent>
                     </div>
                 </div>

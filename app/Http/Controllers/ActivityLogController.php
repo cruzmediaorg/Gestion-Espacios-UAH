@@ -12,7 +12,7 @@ class ActivityLogController extends Controller
     {
         return Inertia::render('Control/Logs/Index',
             [
-                'logs' => ActivityLogResource::collection(Activity::all())
+                'logs' => ActivityLogResource::collection(Activity::all()->sortByDesc('created_at')),
             ]);
     }
 }

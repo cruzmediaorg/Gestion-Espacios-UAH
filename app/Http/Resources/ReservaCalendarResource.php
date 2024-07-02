@@ -22,6 +22,7 @@ class ReservaCalendarResource extends JsonResource
             'StartTime' => $this->fecha . 'T' . $this->hora_inicio . '.000Z',
             'EndTime' => $this->fecha . 'T' . $this->hora_fin . '.000Z',
             'RoomId' => $this->reservable->id,
+            'Status' => $this->estado(),
         ];
     }
 }

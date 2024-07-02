@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -46,20 +47,40 @@ class Curso extends Model
     }
 
     /**
-     * Obtener los horarios de un curso
-     * @return HasMany
-     */
-    public function horarios(): HasMany
-    {
-        return $this->hasMany(Horario::class);
-    }
-
-    /**
      * Obtener el periodo de un curso
      * @return BelongsTo
      */
     public function periodo(): BelongsTo
     {
         return $this->belongsTo(Periodo::class);
+    }
+
+    /**
+     * Obtener los slots de un curso (Clases)
+     * @return HasMany
+     */
+    public function slots(): HasMany
+    {
+        return $this->hasMany(CursoSlot::class);
+    }
+
+    /**
+     * Obtener los slots que no tienen reserva
+     * @return HasMany
+     */
+    public function slotsSinReserva(): HasMany
+    {
+        return $this->slots()
+            ->whereDoesntHave('reservas');
+    }
+
+    /**
+     * Obtener las reservas de un curso (Con los slots)
+     */
+    public function reservas()
+    {
+        return $this->slots()
+            ->whereHas('reservas')
+            ->with('reservas');
     }
 }

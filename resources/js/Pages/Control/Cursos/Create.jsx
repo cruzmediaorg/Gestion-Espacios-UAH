@@ -392,7 +392,6 @@ export default function Create({ auth, docentes, asignaturas }) {
                 window.location.href = route('cursos.index');
             },
             onError: () => {
-                console.log(errors);
                 toast({
                     title: 'Ocurrió un error al guardar el curso',
                     variant: 'error'

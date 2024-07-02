@@ -22,7 +22,7 @@ class UserAlumnoDocenteSeeder extends Seeder
             'password' => bcrypt('12345678'),
         ]);
 
-        $general->assignRole('general');
+        $general->assignRole('Administrador');
 
         // Se crea un usuario responsable (Docente)
         $responsable = \App\Models\User::create([

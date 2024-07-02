@@ -33,6 +33,7 @@ export default function Edit({ auth, tipoTarea }) {
                             {tipoTarea.parametros_requeridos.map((parametro, index) => (
                                 <div key={index}>
                                     <Label>{parametro.label}</Label>
+                                    <p className="text-sm text-gray-500">{parametro.descripcion}</p>
                                     <Input
                                         required
                                         type="text"

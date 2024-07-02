@@ -47,7 +47,7 @@ class Reserva extends Model
         'fecha_cancelacion',
         'cancelado_por',
         'type',
-        'curso_id'
+        'slot_id',
     ];
 
     /**
@@ -84,12 +84,21 @@ class Reserva extends Model
     }
 
     /**
+     * Obtener el slot al que pertenece la reserva
+     * @return BelongsTo
+     */
+    public function slot(): BelongsTo
+    {
+        return $this->belongsTo(CursoSlot::class);
+    }
+
+    /**
      * Obtener el curso al que pertenece la reserva
      * @return BelongsTo
      */
     public function curso(): BelongsTo
     {
-        return $this->belongsTo(Curso::class);
+        return $this->slot->curso();
     }
 
     /**

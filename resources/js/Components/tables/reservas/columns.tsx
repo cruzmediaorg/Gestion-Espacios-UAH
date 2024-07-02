@@ -1,7 +1,6 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/Components/ui/button"
-import { ArrowUpDown } from "lucide-react"
 import { Badge } from "@/Components/ui/badge"
 import Checkbox from "@/Components/Checkbox"
 import { router } from "@inertiajs/react"
@@ -31,27 +30,32 @@ type Curso = {
     nombre: string
 }
 
-export const columns: ColumnDef<Reserva>[] = [
-    {
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all rows"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-    },
+function puedeGestionar(auth, original: TData) {
+    if (auth.user.id === original.asignado_a.id) {
+        return true
+    }
+
+    if (auth.permisos.includes('Gestionar reservas')) {
+        return true
+    }
+
+    // console.log('No puede gestionar', auth, original)
+    return false
+}
+
+function puedeEditar(auth, original: TData) {
+    // Si es el mismo usuario que reservó
+    if (auth.user.id === original.asignado_a.id) {
+        return true
+    }
+
+    // Si tiene permisos de gestionar reservas
+    return !!auth.permisos.includes('Gestionar reservas');
+
+}
+
+export const columns = (auth) => [
+
 
     {
         header: 'Espacio',
@@ -114,22 +118,29 @@ export const columns: ColumnDef<Reserva>[] = [
         cell: (row) => {
             return (
                 <div className="flex justify-center gap-2">
-                    <Button
-                        variant="default"
-                        onClick={() => {
-                            router.get(route('reservas.edit', { id: row.row.original.id }))
-                        }}
-                    >
-                        Editar
-                    </Button>
-                    <Button
-                        variant="destructive"
-                        onClick={() => {
-                            console.log('Delete', row)
-                        }}
-                    >
-                        Eliminar
-                    </Button>
+                    {puedeEditar(auth, row.row.original) && (
+                        <Button
+                            variant="default"
+                            disabled={row.row.original.estado === 'cancelada'}
+                            onClick={() => {
+                                router.get(route('reservas.edit', { id: row.row.original.id }))
+                            }}
+                        >
+                            Editar
+                        </Button>
+                    )}
+                    {puedeGestionar(auth, row.row.original) && (
+                        <Button
+                            disabled={row.row.original.estado === 'cancelada' && !auth.permisos.includes('Gestionar reservas')}
+                            variant="blue"
+                            onClick={() => {
+                                router.get(route('reservas.gestionar', { id: row.row.original.id }))
+                            }}
+                        >
+                            Gestionar
+                        </Button>
+                    )}
+
                 </div>
             )
         },

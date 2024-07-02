@@ -9,6 +9,7 @@ use App\Helper\RelateToAll;
 use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -107,4 +108,11 @@ class User extends Authenticatable
     {
         auth()->user()->hasRole('Administrador') ? $query : $query->where('id', auth()->id());
     }
+
+    public function reservas(): HasMany
+    {
+        return $this->hasMany(Reserva::class, 'asignado_a');
+    }
+
+
 }

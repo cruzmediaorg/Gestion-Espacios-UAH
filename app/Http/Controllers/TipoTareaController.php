@@ -77,7 +77,6 @@ class TipoTareaController extends Controller
         // Se determina la clase que se encargará de ejecutar la tarea (IoC)
         $clase = 'App\Jobs\\' . $tipoTarea->clasePHP;
 
-
         // Se encola la tarea
         dispatch(new $clase($tarea->id, $request->parametros));
 

@@ -58,11 +58,6 @@ class AceptarReservasSinConflictosJob implements ShouldQueue
                 'fecha_fin' => now(),
                 'resultado' => $e->getMessage(),
             ]);
-
-            // Notificar error a los docentes del curso
-            $this->tarea->curso->docentes->each(function ($docente) use ($e) {
-                $docente->notify(new ErrorNotification($e->getMessage()));
-            });
         }
 
         $this->tarea->update([

@@ -30,11 +30,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    auth: any
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    auth
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])

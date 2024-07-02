@@ -13,6 +13,7 @@ use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TipoTareaController;
 use App\Http\Controllers\UsuarioController;
+use App\Models\Espacio;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -44,7 +45,8 @@ Route::get('/logs', [ActivityLogController::class, '__invoke'])->name('logs');
 * Rutas para las reservas
 */
 Route::resource('reservas', ReservaController::class)->middleware(['auth', 'verified']);
-
+Route::get('/reservas/{reserva}/gestionar', [ReservaController::class, 'gestionar'])->name('reservas.gestionar');
+Route::put('/reservas/{reserva}/gestionar', [ReservaController::class, 'cambiarEstado'])->name('reservas.gestionar.store');
 /*
  * Rutas para el calendario
  */

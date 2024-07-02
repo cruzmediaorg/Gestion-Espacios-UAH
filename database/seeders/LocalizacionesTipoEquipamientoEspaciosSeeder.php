@@ -9,18 +9,16 @@ class LocalizacionesTipoEquipamientoEspaciosSeeder extends Seeder
 {
 
     const ZONAS = [
-        'Edificio Politécnico - Zona Norte',
-        'Edificio Politécnico - Zona Sur',
-        'Edificio Politécnico - Zona Este',
-        'Edificio Politécnico - Zona Oeste',
+        'EPS - Norte',
+        'EPS- Oeste',
     ];
 
     const TIPOS = [
         'Aula',
         'Laboratorio',
-        'Biblioteca',
-        'Auditorio',
-        'Sala de reuniones'
+        'Sala de reuniones',
+        'Despacho',
+        'Sala de trabajo',
     ];
 
     const EQUIPAMIENTOS = [
@@ -62,7 +60,7 @@ class LocalizacionesTipoEquipamientoEspaciosSeeder extends Seeder
         }
     }
 
-    /** 
+    /**
      * Generador de colores aleatorios
      * @return string
      */
