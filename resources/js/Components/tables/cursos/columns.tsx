@@ -70,21 +70,21 @@ export const columns: ColumnDef<Curso>[] = [
         cell: ({ row }) => (
             <div className="flex items-center">
                 <Button
-                    onClick={() => router.visit(`/cursos/${row.original.id}`)}
+                    onClick={() => router.visit(`/control/cursos/${row.original.id}`)}
                     className="mr-2"
                     variant="blue"
                     size="sm"
                 >
                     Ver
                 </Button>
-                <Button
-                    onClick={() => router.visit(`/cursos/${row.original.id}/edit`)}
-                    className="mr-2"
-                    variant="default"
-                    size="sm"
-                >
-                    Editar
-                </Button>
+                {/*<Button*/}
+                {/*    onClick={() => router.visit(`/cursos/${row.original.id}/edit`)}*/}
+                {/*    className="mr-2"*/}
+                {/*    variant="default"*/}
+                {/*    size="sm"*/}
+                {/*>*/}
+                {/*    Editar*/}
+                {/*</Button>*/}
                 {/*<Button*/}
                 {/*    onClick={() => router.visit(`/cursos/${row.original.id}/delete`)}*/}
                 {/*    variant="destructive"*/}

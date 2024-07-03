@@ -55,6 +55,7 @@ export default function Create({ auth, docentes, asignaturas }) {
     const [editData, setEditData] = useState({ fecha: '', horaInicio: '', horaFin: '' });
     const [diasSaltados, setDiasSaltados] = useState([]); // Estado para almacenar los días festivos que se han saltado
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+    const [manualSlot, setManualSlot] = useState({ fecha: '', horaInicio: '', horaFin: '' });
 
     // Forms
     const { data, setData, post, processing, errors } = useForm({
@@ -206,6 +207,15 @@ export default function Create({ auth, docentes, asignaturas }) {
             return false;
         }
 
+        // Si la fecha de inicio del periodo es menor a la fecha actual
+        if (new Date(fechaInicioPeriodo) < new Date()) {
+            toast({
+                title: 'La fecha de inicio del periodo debe ser mayor o igual a la fecha actual',
+                variant: 'error'
+            });
+            return false;
+        }
+
         // Si no se ha seleccionado ningún día
         if (data.dias.length === 0) {
             toast({
@@ -309,6 +319,59 @@ export default function Create({ auth, docentes, asignaturas }) {
         nuevosSlots.splice(index, 1);
         setSlots(nuevosSlots);
     };
+
+    const agregarBloqueManual = () => {
+        // Validar que los campos no estén vacíos
+        if (!manualSlot.fecha || !manualSlot.horaInicio || !manualSlot.horaFin) {
+            toast({
+                title: 'Debes completar todos los campos',
+                variant: 'error'
+            });
+            return;
+        }
+        // Validar que la fecha sea mayor o igual que hoy
+        const fechaActual = new Date();
+        const fechaIngresada = new Date(manualSlot.fecha);
+        if (fechaIngresada < fechaActual) {
+            toast({
+                title: 'La fecha de inicio debe ser mayor o igual a la fecha actual',
+                variant: 'error'
+            });
+            return;
+        }
+
+        // Validar que la hora de inicio sea menor a la hora fin
+        const horaInicio = parseTime(manualSlot.horaInicio);
+        const horaFin = parseTime(manualSlot.horaFin);
+        if (horaInicio >= horaFin) {
+            toast({
+                title: 'La hora de inicio debe ser menor a la hora fin',
+                variant: 'error'
+            });
+            return;
+        }
+
+        const nuevaFecha = new Date(manualSlot.fecha);
+        const diaSemanaValores = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+        const nuevoDia = diaSemanaValores[nuevaFecha.getDay()];
+
+        const nuevoSlot = {
+            dia: nuevoDia,
+            fecha: nuevaFecha,
+            horaInicio: manualSlot.horaInicio,
+            horaFin: manualSlot.horaFin,
+        };
+
+        setSlots([...slots, nuevoSlot]);
+        setManualSlot({ fecha: '', horaInicio: '', horaFin: '' });
+
+        toast({
+            title: 'Bloque de clase agregado',
+            variant: 'success'
+        });
+    };
+
+
     const openEditDialog = (index) => {
         setCurrentSlotIndex(index);
         const slot = slots[index];
@@ -525,25 +588,47 @@ export default function Create({ auth, docentes, asignaturas }) {
                                             </div>
                                         ))}
                                     </div>
-                                    <Button variant={"outline"} onClick={borrarSlots} className="mt-4">
-                                        Borrar todos <XIcon className="ml-2 h-4 w-4" />
-                                    </Button>
-                                </div>
-                                {
-                                    diasSaltados.length > 0 && (
-                                        <div className="mt-4 p-5 border rounded-md">
-                                            <h3 className="font-semibold text-lg text-gray-800">Días saltados por festivos:</h3>
-                                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                                                {diasSaltados.map((dia, index) => (
-                                                    <div key={index} className="p-4 border border-gray-300 rounded-md">
-                                                        <p>{dia.toLocaleDateString()}</p>
-                                                    </div>
-                                                ))}
+
+                                    {/* Formulario para agregar un bloque manual */}
+                                    <div className="mt-4 p-4 border rounded-md">
+                                        <h4 className="font-semibold text-md text-gray-800">Agregar Bloque Manual</h4>
+                                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                                            <div>
+                                                <Label>Fecha:</Label>
+                                                <Input
+                                                    type="date"
+                                                    name="fecha"
+                                                    value={manualSlot.fecha}
+                                                    onChange={(e) => setManualSlot({ ...manualSlot, fecha: e.target.value })}
+                                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Hora de inicio:</Label>
+                                                <select name="horaInicio" value={manualSlot.horaInicio} onChange={(e) => setManualSlot({ ...manualSlot, horaInicio: e.target.value })} className="w-full p-2 border border-gray-300 rounded-md">
+                                                    <option value="">Selecciona una hora</option>
+                                                    {horas.map((hora, index) => (
+                                                        <option key={index} value={hora}>{hora}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <Label>Hora fin:</Label>
+                                                <select name="horaFin" value={manualSlot.horaFin} onChange={(e) => setManualSlot({ ...manualSlot, horaFin: e.target.value })} className="w-full p-2 border border-gray-300 rounded-md">
+                                                    <option value="">Selecciona una hora</option>
+                                                    {horas.map((hora, index) => (
+                                                        <option key={index} value={hora}>{hora}</option>
+                                                    ))}
+                                                </select>
                                             </div>
                                         </div>
-                                    )
-                                }
+                                        <Button onClick={agregarBloqueManual} className="mt-4" type="button">
+                                            Agregar bloque manual
+                                        </Button>
+                                    </div>
+                                </div>
                             </ReactIf>
+
 
                         </div>
                         <div className="bg-white p-5 rounded-md">

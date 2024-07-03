@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -76,8 +77,9 @@ class Curso extends Model
 
     /**
      * Obtener las reservas de un curso (Con los slots)
+     * @return HasMany<App\Models\CursoSlot>
      */
-    public function reservas()
+    public function reservas(): HasMany
     {
         return $this->slots()
             ->whereHas('reservas')

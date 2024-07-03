@@ -25,7 +25,9 @@ class ReservaController extends Controller
     {
 
         return Inertia::render('Reservas/Index', [
-            'reservas' => ReservaResource::collection(Reserva::segunUsuario()->get()),
+            'reservas' => ReservaResource::collection(Reserva::segunUsuario()
+                ->orderBy('created_at', 'desc')
+                ->get()),
             'openDrawer' => false,
         ]);
     }
@@ -36,7 +38,9 @@ class ReservaController extends Controller
     public function create(): Response
     {
         return Inertia::render('Reservas/Index', [
-            'reservas' => ReservaResource::collection(Reserva::segunUsuario()->get()),
+            'reservas' => ReservaResource::collection(Reserva::segunUsuario()
+                ->orderBy('created_at', 'desc')
+                ->get()),
             'openDrawer' => true,
             'espacios' => EspacioResource::collection(Espacio::all()),
             'usuarios' => User::segunUsuario()->get(),
@@ -98,7 +102,9 @@ class ReservaController extends Controller
     public function edit(Reserva $reserva): Response
     {
         return Inertia::render('Reservas/Index', [
-            'reservas' => ReservaResource::collection(Reserva::segunUsuario()->get()),
+            'reservas' => ReservaResource::collection(Reserva::segunUsuario()
+                ->orderBy('created_at', 'desc')
+                ->get()),
             'openDrawer' => true,
             'espacios' => EspacioResource::collection(Espacio::all()),
             'usuarios' => User::segunUsuario()->get(),
@@ -114,7 +120,9 @@ class ReservaController extends Controller
     public function gestionar(Reserva $reserva): Response
     {
         return Inertia::render('Reservas/Index', [
-            'reservas' => ReservaResource::collection(Reserva::segunUsuario()->get()),
+            'reservas' => ReservaResource::collection(Reserva::segunUsuario()
+                ->orderBy('created_at', 'desc')
+                ->get()),
             'reserva' => ReservaResource::make($reserva),
             'openGestionarDialog' => true,
             'openDrawer' => false,

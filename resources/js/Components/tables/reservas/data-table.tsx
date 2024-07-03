@@ -65,13 +65,13 @@ export function DataTable<TData, TValue>({
                 <div className="flex items-center gap-4 ">
                     {/* Filtro por tipo */}
                     <select className="px-4 rounded-md border py-2 w-36" onChange={(event) => {
-                        table.getColumn("tipo")?.setFilterValue(event.target.value)
+                        table.getColumn("estado")?.setFilterValue(event.target.value)
                     }
                     }>
                         <option value="">Todos</option>
-                        <option value="admin">Administrador</option>
-                        <option value="responsable">Responsable</option>
-                        <option value="general">Usuarios</option>
+                        <option value="cerrada">Cerrada</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="aprobada">Aprobada</option>
                     </select>
 
                 </div>

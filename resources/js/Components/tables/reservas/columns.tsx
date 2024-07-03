@@ -31,6 +31,7 @@ type Curso = {
 }
 
 function puedeGestionar(auth, original: TData) {
+
     if (auth.user.id === original.asignado_a.id) {
         return true
     }
@@ -121,7 +122,7 @@ export const columns = (auth) => [
                     {puedeEditar(auth, row.row.original) && (
                         <Button
                             variant="default"
-                            disabled={row.row.original.estado === 'cancelada'}
+                            disabled={row.row.original.estado === 'cancelada' || row.row.original.estado === 'cerrada'}
                             onClick={() => {
                                 router.get(route('reservas.edit', { id: row.row.original.id }))
                             }}
@@ -131,7 +132,7 @@ export const columns = (auth) => [
                     )}
                     {puedeGestionar(auth, row.row.original) && (
                         <Button
-                            disabled={row.row.original.estado === 'cancelada' && !auth.permisos.includes('Gestionar reservas')}
+                            disabled={row.row.original.estado === 'cancelada' && !auth.permisos.includes('Gestionar reservas') || row.row.original.estado === 'cerrada'}
                             variant="blue"
                             onClick={() => {
                                 router.get(route('reservas.gestionar', { id: row.row.original.id }))

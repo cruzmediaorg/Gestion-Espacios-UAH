@@ -10,10 +10,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class AceptarReservasSinConflictosJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
 
     protected $reservas;
     private $tarea;
@@ -33,26 +35,31 @@ class AceptarReservasSinConflictosJob implements ShouldQueue
 
 
         try {
+
+            Log::debug('RESERVAS: ' . json_encode($this->reservas));
             foreach ($this->reservas as $reserva) {
 
-                $reserva = Reserva::where('id', $reserva)->first();
+                $tReserva = Reserva::where('id', $reserva)->first();
 
-                if ($reserva->estado() != 'pendiente') {
+                if ($tReserva->estado() != 'pendiente') {
                     \Log::debug('Reserva ya aprobada o rechazada');
                     continue;
                 }
-                $reserva->fecha_aprobacion = now();
-                $reserva->save();
+                $tReserva->fecha_aprobacion = now();
+                $tReserva->save();
 
-                \Log::debug('Reserva ' . $reserva->id . ' aprobada');
+                \Log::debug('Reserva ' . $tReserva->id . ' aprobada');
 
                 // Notificar a los docentes del curso
-                $reserva->curso->docentes->each(function ($docente) use ($reserva) {
-                    $docente->notify(new SuccessNotification('Reserva #' . $reserva->id . ' correspondiente al curso ' . $reserva->curso->nombre . ' confirmada en fecha ' . $reserva->fecha . ' de ' . $reserva->hora_inicio . ' a ' . $reserva->hora_fin));
+                /** @phpstan-ignore-next-line */
+                $tReserva->curso->docentes->each(function ($docente) use ($tReserva) {
+                    $docente->notify(new SuccessNotification('Reserva #' . $tReserva->id . ' correspondiente al curso ' . $tReserva->curso->nombre . ' confirmada en fecha ' . $tReserva->fecha . ' de ' . $tReserva->hora_inicio . ' a ' . $tReserva->hora_fin));
                 });
             }
         } catch (\Exception $e) {
             \Log::error('Error al aceptar reservas sin conflictos: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            \Log::error($e->getLine());
             $this->tarea->update([
                 'estado' => 'error',
                 'fecha_fin' => now(),

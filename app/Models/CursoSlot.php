@@ -9,12 +9,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CursoSlot extends Model
 {
     protected $table = 'curso_slots';
-    protected function casts()
-    {
-        return [
-            'dia' => 'date',
-        ];
-    }
+
+    protected $guarded = [];
+
+//    protected function casts()
+//    {
+//        return [
+//            'dia' => 'date',
+//        ];
+//    }
 
     /**
      * Obtener el curso al que pertenece el slot

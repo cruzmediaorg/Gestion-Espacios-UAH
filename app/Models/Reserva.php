@@ -50,6 +50,8 @@ class Reserva extends Model
         'slot_id',
     ];
 
+    protected $appends = ['estado', 'nombre'];
+
     /**
      * Opciones de configuración para el log de actividad
      */
@@ -108,7 +110,7 @@ class Reserva extends Model
     public function estado(): string
     {
         return match (true) {
-            $this->fecha < now() => 'cerrada',
+            $this->fechaPasada() => 'cerrada',
             $this->fecha_aprobacion !== null => 'aprobada',
             $this->fecha_cancelacion !== null => 'cancelada',
             $this->fecha_rechazo !== null => 'rechazada',
@@ -116,11 +118,37 @@ class Reserva extends Model
         };
     }
 
+    public function fechaPasada(): bool
+    {
+        // Fecha de la reserva + hora de fin.
+        $fechaFin = Carbon::parse($this->fecha . ' ' . $this->hora_fin);
+        return $fechaFin->isPast();
+
+    }
+
     /**
      * Scope para obtener las reservas de un usuario
      */
     public function scopeSegunUsuario(Builder $query): void
     {
-        auth()->user()->hasRole('Administrador') ? $query : $query->where('asignado_a', auth()->id());
+        auth()->user()?->hasRole('Administrador') ? $query : $query->where('asignado_a', auth()->id());
     }
+
+    /**
+     * @return string
+     */
+    public function getEstadoAttribute(): string
+    {
+        return $this->estado();
+    }
+
+    /**
+     * @return string
+     */
+    public function getNombreAttribute(): string
+    {
+        return $this->reservable->nombre;
+    }
+
+
 }

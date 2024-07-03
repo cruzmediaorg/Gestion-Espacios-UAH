@@ -7,7 +7,6 @@ use App\Models\Espacio;
 use App\Models\Reserva;
 use App\Models\Tarea;
 use App\Models\TipoTarea;
-use App\Notifications\SuccessNotification;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -26,17 +25,20 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
 
     protected $cursos;
 
+    private array $slots;
+
     /**
      * Create a new job instance.
      */
 
-    private array $slots;
     public function __construct(
         public int $tareaId,
-        public array $params
+        public array $params,
+        public bool $aceptarReservas = true
     ) {
         $this->tarea = Tarea::find($tareaId);
         $this->parametros = $params;
+        $this->aceptarReservas = $aceptarReservas;
 
         if (strtolower($this->params['cursos']) === 'todos') {
             $this->cursos = Curso::all();
@@ -91,6 +93,16 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
             ]);
             return;
         } else {
+
+            if (!$this->aceptarReservas) {
+                $this->tarea->update([
+                    'estado' => 'completado',
+                    'resultado' => 'Se crearon ' . count($reservas) . ' reservas correctamente',
+                    'fecha_fin' => now(),
+                ]);
+                return;
+            }
+
 
             $tarea = Tarea::create([
                 'tipo_tarea_id' => TipoTarea::where('alias', 'aceptar_reservas_sin_conflictos')->first()->id,

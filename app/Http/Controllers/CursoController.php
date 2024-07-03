@@ -12,6 +12,7 @@ use App\Models\TipoTarea;
 use App\Models\User;
 use App\Notifications\CursoCreadoNotification;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -94,12 +95,8 @@ class CursoController extends Controller
             'nombre' => $asignatura->nombre,
             'periodo_id' => $periodo->id,
             'asignatura_id' => $asignatura->id,
-            'dias' => implode(',', $request->dias),
-            'hora_inicio' => $request->input('hora_inicio'),
-            'hora_fin' => $request->input('hora_fin'),
-            'cantidad_horas' => $request->input('cantidad_horas'),
             'alumnos_matriculados' => $request->input('alumnos_matriculados'),
-            'total_clases_semana' => $request->input('total_clases'),
+            'total_clases_curso' => $request->input('total_clases'),
         ]);
 
 
@@ -115,23 +112,40 @@ class CursoController extends Controller
             $slots = [];
 
             foreach ($request->slots as $slot) {
-                $slots[] = [
+                $curso->slots()->create([
                     'hora_inicio' => $slot['horaInicio'],
                     'hora_fin' => $slot['horaFin'],
-                    'fecha' => $slot['fecha'],
-                ];
+                    'dia' => Carbon::parse($slot['fecha']),
+                ]);
             }
 
+            $tipoTarea = TipoTarea::where('alias', 'crear_reservas_sin_slots')->first();
+            $claseTipoTarea = 'App\Jobs\\' . $tipoTarea->clasePHP;
+
             $tarea = Tarea::create([
-                'tipo_tarea_id' => TipoTarea::where('alias', 'crear_reservas_slots')->first()->id,
+                'tipo_tarea_id' => $tipoTarea->id,
                 'estado' => 'pendiente',
                 'fecha_inicio' => now(),
             ]);
 
-            CrearReservasDesdeSlotsJob::dispatch($curso, $slots, $periodo, $tarea);
+            //Undefined array key "cursos"
+            $arrayCursos = [
+                'cursos' => $curso->id,
+            ];
+
+            dispatch(new $claseTipoTarea($tarea->id, $arrayCursos));
         }
 
         return redirect()->route('cursos.index')->with('success', 'Curso creado con éxito');
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(Curso $curso)
+    {
+        return Inertia::render('Control/Cursos/View', [
+            'curso' => $curso->load(['asignatura', 'periodo', 'docentes','periodo','slots.reservas']),
+        ]);
+    }
 }
