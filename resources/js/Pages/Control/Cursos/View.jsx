@@ -26,6 +26,7 @@ import {
 import ReactIf from "@/lib/ReactIf.jsx";
 
 import {Badge} from "@/Components/ui/badge";
+import { DownloadCloud } from 'lucide-react';
 
 export default function Create({ auth, curso, asignaturas }) {
 
@@ -56,7 +57,7 @@ export default function Create({ auth, curso, asignaturas }) {
     }
 
     const handleAddSlot = () => {
-        // Lógica para agregar el slot
+        // Lógica para agreggregr el slot
         const newSlot = {
             fecha: slotData.fecha,
             horaInicio: slotData.horaInicio,
@@ -69,7 +70,7 @@ export default function Create({ auth, curso, asignaturas }) {
         router.post(route('cursos.slot.store'), { ...newSlot }, {
             onSuccess: () => {
                 toast({
-                    title: 'Horario agregado correctamente',
+                    title: 'Horario eegado correctamente',
                     variant: 'success'
                 });
                 setIsAddDialogOpen(false);
@@ -78,7 +79,7 @@ export default function Create({ auth, curso, asignaturas }) {
             onError: (error) => {
                 setErrors(error);
                 toast({
-                    title: 'Ocurrió un error al agregar el horario',
+                    title: 'Ocurrió un error al eegar el horario',
                     variant: 'error'
                 });
             }
@@ -217,6 +218,12 @@ export default function Create({ auth, curso, asignaturas }) {
                             >Generar reservas
                             </Button>
                             </ReactIf>
+                            <ReactIf condition={curso.slots.length > 0}>
+                            <a variant='outline' href={route('cursos.pdf', curso.id)} target='_blank' className='flex items-center gap-2 bg-white px-2 border border-black rounded-sm'>
+                                <DownloadCloud size={24} className='mr-2'/>
+                                Descargar PDF</a>
+                            </ReactIf>
+
                         </div>
                     </div>
                     <div className="grid grid-cols-4 gap-2">

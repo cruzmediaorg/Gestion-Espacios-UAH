@@ -15,6 +15,7 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class CursoController extends Controller
 {
@@ -147,5 +148,17 @@ class CursoController extends Controller
         return Inertia::render('Control/Cursos/View', [
             'curso' => $curso->load(['asignatura', 'periodo', 'docentes','periodo','slots.reservas']),
         ]);
+    }
+
+    /**
+     * Download PDF
+     */
+
+    public function downloadPdf(Curso $curso)
+    {
+        $curso = Curso::with(['reservas', 'docentes', 'periodo'])->find($curso->id);
+
+        return Pdf::view('pdf.horarios', ['curso' => $curso])->format('a4')->name('horario.pdf');
+
     }
 }

@@ -76,6 +76,7 @@ Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
 
     // Cursos
     Route::resource('cursos', CursoController::class);
+    Route::get('/cursos/{curso}/pdf', [CursoController::class, 'downloadPdf'])->name('cursos.pdf');
     Route::post('/cursos/slots', [CursoSlotController::class, 'store'])->name('cursos.slot.store');
     Route::put('/cursos/slots/{slot}', [CursoSlotController::class, 'update'])->name('cursos.slot.update');
     Route::get('/cursos/{curso}/reservas/generar', [CursoSlotController::class, 'generarReservas'])->name('cursos.reservas.generar');
