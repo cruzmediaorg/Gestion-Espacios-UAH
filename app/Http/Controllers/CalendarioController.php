@@ -8,6 +8,7 @@ use App\Models\Espacio;
 use App\Models\Localizacion;
 use App\Models\Reserva;
 use App\Models\TipoEspacio;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -43,11 +44,13 @@ class CalendarioController extends Controller
 
         return Inertia::render('Calendario/Index', [
             'espacios' => EspacioCalendarResource::collection($espacios),
+            'espaciosRaw' => $espacios,
             'reservas' => ReservaCalendarResource::collection($reservas),
             'tipo' => $request->tipo ?? null,
             'localizacion' => $request->localizacion ?? null,
             'localizaciones' => $localizaciones,
             'clave' => config('services.calendar.sync_key'),
+            'usuarios' => auth()->user()->hasRole('administrador') ? User::all() : User::where('id', auth()->id())->get(),
         ]);
     }
 }

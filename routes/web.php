@@ -5,6 +5,7 @@ use App\Http\Controllers\AsignaturaGradoController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\CursoSlotController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EspacioController;
 use App\Http\Controllers\EquipamientoEspacioController;
 use App\Http\Controllers\GradoController;
@@ -37,6 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/logs', [ActivityLogController::class, '__invoke'])->name('logs');
 
     // Reservas
+    Route::get('/reservas/{reserva}/ver', [ReservaController::class, 'show'])->name('reservas.showView');
     Route::resource('reservas', ReservaController::class)->middleware(['auth', 'verified']);
     Route::get('/reservas/{reserva}/gestionar', [ReservaController::class, 'gestionar'])->name('reservas.gestionar');
     Route::put('/reservas/{reserva}/gestionar', [ReservaController::class, 'cambiarEstado'])->name('reservas.gestionar.store');
@@ -51,9 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/notificaciones', [NotificationController::class, 'markAllAsRead'])->name('notificaciones.marcar-todas-como-leidas');
 
     // Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

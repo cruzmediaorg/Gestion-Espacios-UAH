@@ -23,7 +23,7 @@ import { Calendar as CalendarIcon } from "lucide-react"
 
 import { Calendar } from "@/Components/ui/calendar"
 
-export default function Form({ isEdit = false, reserva = {}, espacios = {}, recursos = {}, usuarios = {} }) {
+export default function Form({bloquearFechaYHora = false, seleccionarPrimero = false, isEdit = false, reserva = {}, espacios = {}, recursos = {}, usuarios = {}, fecha = null, hora_inicio = null, hora_fin = null, }) {
 
     const [openReservableType, setOpenReservableType] = React.useState(false)
     const [openReservableList, setOpenReservableList] = React.useState(false)
@@ -31,6 +31,8 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
     const [openHorarioFin, setOpenHorarioFin] = React.useState(false)
 
     const [selectedEspacio, setSelectedEspacio] = React.useState(null);
+
+
 
     const reservasTypes = [
         'Clase Práctica',
@@ -81,6 +83,11 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
     ];
 
     const horasDisponiblesInicio = () => {
+
+        if (bloquearFechaYHora) {
+            return horas;
+        }
+
         if (selectedEspacio) {
             const horariosOcupados = selectedEspacio.horarios_ocupados;
             const fecha = new Date(data.fecha).toISOString().split('T')[0];
@@ -112,6 +119,21 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
         }
     }
 
+    React.useEffect(() => {
+        if (seleccionarPrimero && espacios.length > 0 && usuarios.length > 0) {
+
+            setData((prevData) => ({
+                ...prevData,
+                reservable_id: espacios[0].id,
+                reservable_type: 'App\\Models\\Espacio',
+                asignado_a: usuarios[0].id,
+                fecha: fecha || new Date().toISOString(),
+                hora_inicio: hora_inicio || '',
+                hora_fin: hora_fin || '',
+            }));
+        }
+    }, [seleccionarPrimero, espacios, usuarios]);
+
 
     return (
         <div className="p-5">
@@ -133,10 +155,13 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
             )}
             <form onSubmit={submit}>
                 <div className="flex flex-col gap-2 w-full">
+            
                     <Label>Reservable</Label>
                     <Popover open={openReservableType} onOpenChange={setOpenReservableType}>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" role="combobox" aria-expanded={openReservableType} className="w-full max-w-[400px] justify-between">
+                            <Button 
+                            disabled={bloquearFechaYHora}
+                            variant="outline" role="combobox" aria-expanded={openReservableType} className="w-full max-w-[400px] justify-between">
                                 {reservableTypes.find(t => t.value === data.reservable_type)?.label || "Seleccionar tipo de reservable"}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
@@ -167,7 +192,9 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
                     </Popover>
                     <Popover open={openReservableList} onOpenChange={setOpenReservableList}>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" role="combobox" aria-expanded={openReservableList} className="w-full max-w-[400px] justify-between">
+                            <Button
+                            disabled={bloquearFechaYHora}
+                            variant="outline" role="combobox" aria-expanded={openReservableList} className="w-full max-w-[400px] justify-between">
                                 {data.reservable_id ? (data.reservable_type === 'App\\Models\\Espacio' ? espacios.find(e => e.id === data.reservable_id)?.nombre : recursos.length > 0 ? recursos.find(r => r.id === data.reservable_id)?.nombre : 'Seleccionar reservable') : 'Seleccionar reservable'}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
@@ -260,6 +287,7 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button
+                                disabled={bloquearFechaYHora}
                                 variant={"outline"}
                                 className={cn(
                                     "w-[280px] justify-start text-left font-normal",
@@ -304,7 +332,9 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
                             <Label>Hora de inicio</Label>
                             <Popover open={openHorarioInicio} onOpenChange={setOpenHorarioInicio}>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" role="combobox" aria-expanded={openHorarioInicio} className="w-full max-w-[400px] justify-between">
+                                    <Button
+                                     disabled={bloquearFechaYHora}
+                                    variant="outline" role="combobox" aria-expanded={openHorarioInicio} className="w-full max-w-[400px] justify-between">
                                         {data.hora_inicio ? data.hora_inicio : 'Seleccionar hora de inicio'}
                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                     </Button>
@@ -338,7 +368,9 @@ export default function Form({ isEdit = false, reserva = {}, espacios = {}, recu
                                 <Label>Hora de fin</Label>
                                 <Popover open={openHorarioFin} onOpenChange={setOpenHorarioFin}>
                                     <PopoverTrigger asChild>
-                                        <Button variant="outline" role="combobox" aria-expanded={openHorarioFin} className="w-full max-w-[400px] justify-between">
+                                        <Button 
+                                        disabled={bloquearFechaYHora}
+                                        variant="outline" role="combobox" aria-expanded={openHorarioFin} className="w-full max-w-[400px] justify-between">
                                             {data.hora_fin ? data.hora_fin : 'Seleccionar hora de fin'}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>

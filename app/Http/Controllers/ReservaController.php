@@ -208,4 +208,12 @@ class ReservaController extends Controller
 
         return redirect()->route('reservas.index')->with('success', 'Reserva actualizada correctamente');
     }
+
+    public function show(Reserva $reserva)
+    {
+
+        return Inertia::render('Reservas/Show', [
+            'reserva' => $reserva,
+        ]);
+    }
 }

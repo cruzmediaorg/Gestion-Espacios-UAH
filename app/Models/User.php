@@ -114,5 +114,20 @@ class User extends Authenticatable
         return $this->hasMany(Reserva::class, 'asignado_a');
     }
 
+    public function reservasProximas(): HasMany
+    {
+        return $this->reservas()->where('fecha', '>=', now()->format('Y-m-d'))->orderBy('fecha', 'asc');
+    }
+
+    // Reservas pasadas, para mostrar en el dashboard, del último mes...
+    public function reservasPasadas(): HasMany
+    {
+        return $this->reservas()
+        ->with('reservable')
+        ->where('fecha', '<', now()->format('Y-m-d'))
+        ->where('fecha', '>=', now()->subMonth()->format('Y-m-d'));
+
+    }
+
 
 }

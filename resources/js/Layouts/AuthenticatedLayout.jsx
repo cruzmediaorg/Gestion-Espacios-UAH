@@ -63,7 +63,7 @@ export default function Authenticated({ user, header, children }) {
                         }
                     >
                         <HomeIcon size='24' />
-                        Panel
+                        Inicio
                     </NavLink>
                     <NavLink href='/calendario'
                         active={

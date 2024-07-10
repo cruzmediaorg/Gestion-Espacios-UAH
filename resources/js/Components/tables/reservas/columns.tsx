@@ -119,6 +119,17 @@ export const columns = (auth) => [
         cell: (row) => {
             return (
                 <div className="flex justify-center gap-2">
+                           {puedeEditar(auth, row.row.original) && (
+                        <Button
+                            variant="default"
+                            disabled={row.row.original.estado === 'cancelada' || row.row.original.estado === 'cerrada'}
+                            onClick={() => {
+                                router.get(route('reservas.showView', { id: row.row.original.id }))
+                            }}
+                        >
+                            Ver
+                        </Button>
+                    )}
                     {puedeEditar(auth, row.row.original) && (
                         <Button
                             variant="default"

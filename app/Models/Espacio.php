@@ -36,6 +36,8 @@ class Espacio extends Model
         'codigo',
     ];
 
+    protected $appends = ['nombreConLocalizacion', 'tipoEspacioName', 'equipamientos'];
+
     /**
      * Obtener el tipo de espacio asociado al espacio
      * @return HasOne
@@ -129,4 +131,24 @@ class Espacio extends Model
 
         return $disponibilidad;
     }
+
+    public function getNombreConLocalizacionAttribute(): string
+    {
+       $localizacion = $this->localizacion()->first()->nombre;
+
+       return $this->nombre . ' - ' . $localizacion;
+    }
+
+    public function getTipoEspacioNameAttribute($value): string
+    {
+        return $this->tipoEspacio->nombre;
+    }
+
+    public function getEquipamientosAttribute($value): Collection
+    {
+        return $this->equipamientos();
+    }
+    
+
+
 }

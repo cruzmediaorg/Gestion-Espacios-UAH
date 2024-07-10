@@ -34,7 +34,9 @@ export default function Index({ auth, reservas, openDrawer = false, isEdit = fal
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<div className='flex justify-between items-center'> <h2 className="font-semibold text-xl text-gray-800 leading-tight">Reserva</h2><Button
+            header={<div className='flex justify-between items-center'> <h2 className="font-semibold text-xl text-gray-800 leading-tight">Reservas 
+            ({reservas.length})
+            </h2><Button
                 onClick={() => {
                     router.get('/reservas/create')
                 }

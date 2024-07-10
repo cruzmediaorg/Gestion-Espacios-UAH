@@ -50,7 +50,7 @@ class Reserva extends Model
         'slot_id',
     ];
 
-    protected $appends = ['estado', 'nombre'];
+    protected $appends = ['estado', 'nombre', 'human_readable_date','curso'];
 
     /**
      * Opciones de configuración para el log de actividad
@@ -98,9 +98,9 @@ class Reserva extends Model
      * Obtener el curso al que pertenece la reserva
      * @return BelongsTo
      */
-    public function curso(): BelongsTo
+    public function curso(): BelongsTo|null
     {
-        return $this->slot->curso();
+        return $this->slot ? $this->slot->curso() :null;
     }
 
     /**
@@ -148,6 +148,28 @@ class Reserva extends Model
     public function getNombreAttribute(): string
     {
         return $this->reservable->nombre;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHumanReadableDateAttribute(): string
+    {
+        // Ejemplo... Lunes 12 de Julio de 2021 de 10:00 a 12:00...
+
+        $fecha = Carbon::parse($this->fecha);
+        $horaInicio = Carbon::parse($this->hora_inicio);
+        $horaFin = Carbon::parse($this->hora_fin);
+
+        return $fecha->isoFormat('dddd D [de] MMMM [de] YYYY') . ' de ' . $horaInicio->format('H:i') . 'h. a ' . $horaFin->format('H:i') . 'h.';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCursoAttribute(): string
+    {
+        return $this->curso()?->first()->nombre ?? 'Reserva puntual';
     }
 
 
