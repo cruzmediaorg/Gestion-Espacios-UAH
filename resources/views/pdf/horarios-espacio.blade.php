@@ -30,6 +30,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if ($espacio->reservas->isEmpty())
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="px-4 py-2" colspan="5">No hay reservas para este espacio en el período seleccionado.</td>
+                        </tr>
+                    @else
                     @foreach($espacio->reservas as $reserva)
                         <tr class="border-b border-gray-200 hover:bg-gray-50">
                             <td class="px-4 py-2">{{ $reserva->fecha }}</td>
@@ -45,6 +50,8 @@
                             </td>
                         </tr>
                     @endforeach
+                    @endif
+
                 </tbody>
             </table>
         </div>
