@@ -97,8 +97,8 @@ export default function Authenticated({ user, header, children }) {
 
                 <div className='flex flex-col items-center bg-white justify-center w-full absolute bottom-0'>
                     <div className='w-10 h-10 bg-uahBlue rounded-full mt-4'></div>
-                    <p className='text-uahBlue mt-2'>{user.name}</p>
-                    <p className='text-uahBlue mt-2'>{user.email}</p>
+                    <p className='text-uahBlue mt-2'>{user?.name}</p>
+                    <p className='text-uahBlue mt-2'>{user?.email}</p>
 
                     <Link href='/logout' method='post' as='button' className='bg-uahBlue  mb-4  px-4 py-2 rounded-sm text-white mt-4'>Cerrar sesión</Link>
                 </div>
@@ -109,9 +109,9 @@ export default function Authenticated({ user, header, children }) {
             <main className="h-[100vh] overflow-y-scroll max-w-screen-xl w-full p-12">
                 <Toaster />
                 <header className='w-full border-b py-2'>
-                    {header}
+                    {header && header}
                 </header>
-                {children}
+                {children && <div className='mt-4'>{children}</div>}
             </main>
         </div>
     );

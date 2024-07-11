@@ -14,6 +14,6 @@ class UsuariosRandomSeeder extends Seeder
     public function run(): void
     {
         // Se crean 50 usuarios aleatorios
-        User::factory()->count(50)->create();
+        // User::factory()->count(50)->create();
     }
 }

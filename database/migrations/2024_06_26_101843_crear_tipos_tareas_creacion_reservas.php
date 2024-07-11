@@ -26,7 +26,7 @@ return new class extends Migration
         ], [
             'nombre' => 'Aceptar reservas sin conflictos',
             'descripcion' => 'Acepta las reservas sin conflictos automáticamente',
-            'clasePHP' => 'AceptarReservasSinConflictosJob.php',
+            'clasePHP' => 'AceptarReservasSinConflictosJob',
             'periocidad' => 'DESACTIVADA',
         ]);
     }

@@ -216,4 +216,5 @@ class ReservaController extends Controller
             'reserva' => $reserva,
         ]);
     }
+
 }

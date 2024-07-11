@@ -310,7 +310,7 @@ export default function Calendario({ auth, espacios, reservas, espaciosRaw, tipo
                             popupOpen={onPopupOpen}
                             actionBegin={onActionBegin}
                             renderCell={onRenderCell}
-                            timezone='UTC-2'
+                            timezone='UTC'
                             group={{ enableCompactView: true, resources: ['MeetingRoom'] }}>
                             <ResourcesDirective>
                                 <ResourceDirective field='RoomId' title='Room Type' name='MeetingRoom' allowMultiple={true} dataSource={espacios} textField='text' idField='id' colorField='color' />

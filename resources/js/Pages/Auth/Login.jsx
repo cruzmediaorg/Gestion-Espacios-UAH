@@ -38,14 +38,14 @@ export default function Login({ status, canResetPassword }) {
             {!showSIDLogin && (
                 <div className="flex items-center justify-center my-4">
                     <div className="space-y-4 w-96">
-                        <PrimaryButton
+                        {/* <PrimaryButton
                             className="bg-[#1da1f2] rounded-sm py-4 w-full justify-center"
                             onClick={() => window.location = route('login.microsoft')}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
                                 className="w-4 h-4 inline-block mr-2" fill="currentColor"
                             ><path d="M0 32h214.6v214.6H0V32zm233.4 0H448v214.6H233.4V32zM0 265.4h214.6V480H0V265.4zm233.4 0H448V480H233.4V265.4z" /></svg>Continuar con Microsoft O365
-                        </PrimaryButton>
+                        </PrimaryButton> */}
                         <PrimaryButton
                             className="bg-uahBlue hover:bg-uahBlue/90 py-4 rounded-sm w-full justify-center"
                             onClick={() => setShowSIDLogin(true)}

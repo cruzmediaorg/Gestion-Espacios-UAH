@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Log;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -171,6 +172,49 @@ class Reserva extends Model
     {
         return $this->curso()?->first()->nombre ?? 'Reserva puntual';
     }
+
+    /**
+     * Reservas pendientes de aprobación
+     */
+    public function scopePendientes(Builder $query): void
+    {
+        $query->whereNull('fecha_aprobacion')
+            ->whereNull('fecha_rechazo')
+            ->whereNull('fecha_cancelacion');
+    }
+
+    /**
+     * Tiene conflicto
+     */
+
+    public function tieneConflictos(): bool
+    {
+        $reservas = Reserva::where('reservable_id', $this->reservable_id)
+        ->where('fecha', $this->fecha)
+        ->where(function ($query) {
+            $query->where(function ($q) {
+                // Caso 1: La nueva reserva comienza durante una reserva existente
+                $q->where('hora_inicio', '<=', $this->hora_inicio)
+                  ->where('hora_fin', '>', $this->hora_inicio);
+            })->orWhere(function ($q) {
+                // Caso 2: La nueva reserva termina durante una reserva existente
+                $q->where('hora_inicio', '<', $this->hora_fin)
+                  ->where('hora_fin', '>=', $this->hora_fin);
+            })->orWhere(function ($q) {
+                // Caso 3: La nueva reserva engloba completamente una reserva existente
+                $q->where('hora_inicio', '>=', $this->hora_inicio)
+                  ->where('hora_fin', '<=', $this->hora_fin);
+            });
+        })
+        ->where('id', '!=', $this->id)
+        ->get();
+
+        Log::debug('La reserva ' . $this->id . ' tiene ' . $reservas->count() . ' conflictos con: ' . $reservas->pluck('id')->implode(','));
+            
+        return $reservas->count() > 0;
+    }
+
+    
 
 
 }

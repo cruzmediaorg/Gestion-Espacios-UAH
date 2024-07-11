@@ -10,7 +10,7 @@ import {
 } from "@/Components/ui/drawer"
 import { ScrollArea } from "@/Components/ui/scroll-area"
 import Form from './Form';
-import { X } from 'lucide-react';
+import { RefreshCcw, X } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -19,8 +19,9 @@ import {
     DialogTitle,
 } from "@/Components/ui/dialog"
 
+
 import ReactIf from "@/lib/ReactIf.jsx";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 
 
@@ -30,21 +31,73 @@ export default function Index({ auth, reservas, openDrawer = false, isEdit = fal
         router.put(route('reservas.gestionar.store', id), { estado: estado });
     }
 
+    const [open, setOpen] = useState(false);
+    
+
+    function generarReservas() {
+
+        let datos = {
+            'parametros': {
+                'cursos': 'todos',
+            }
+        }
+
+        //crear_reservas_sin_slots
+        router.post(route('tareas.ejecutar', 4), datos);
+    }
+
 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={<div className='flex justify-between items-center'> <h2 className="font-semibold text-xl text-gray-800 leading-tight">Reservas 
             ({reservas.length})
-            </h2><Button
+            </h2>
+            <div className="flex space-x-4">
+            <Button
+                onClick={() => {
+                    setOpen(true)
+                }
+                }
+                className="flex gap-2 items-center"
+                variant="outline">
+                Generar reservas <RefreshCcw size={12} />
+            </Button>
+            <Button
                 onClick={() => {
                     router.get('/reservas/create')
                 }
                 }
                 variant="blue">
                 Nueva reserva
-            </Button></div>}
+            </Button>
+            </div>
+            </div>
+            
+        }
         >
+
+
+        <Dialog open={open} onOpenChange={() => setOpen(false)}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Generar reservas automaticas</DialogTitle>
+                    <DialogDescription>
+                        Se generarán automáticamente las reservas para todos los cursos que aún no tengan un espacio asignado. 
+                        <br />
+                        <strong>Este proceso dará prioridad a los cursos con más estudiantes para la selección de cursos.</strong>
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <Button onClick={() => setOpen(false)} variant="outline">Cancelar</Button>
+                    <Button onClick={() =>
+                        generarReservas()
+                    } variant="blue">Iniciar</Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+
+
             <div className="h-full overflow-y-scroll">
                 <div className="">
                     <DataTable auth={auth} columns={columns(auth)} data={reservas} />

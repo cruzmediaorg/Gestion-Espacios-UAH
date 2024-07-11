@@ -40,22 +40,24 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
         $this->parametros = $params;
         $this->aceptarReservas = $aceptarReservas;
 
+        // Ordenamos los cursos por cantidad de alumnos matriculados.
         if (strtolower($this->params['cursos']) === 'todos') {
-            $this->cursos = Curso::all();
+            $this->cursos = Curso::orderByDesc('alumnos_matriculados')->get();
         } else {
             $cursosIds = explode(',', $this->params['cursos']);
-            $this->cursos = Curso::whereIn('id', $cursosIds)->get();
+            $this->cursos = Curso::whereIn('id', $cursosIds)->orderByDesc('alumnos_matriculados')->get();
         }
     }
 
     public function handle(): void
     {
+        // Empezamos la tarea...
         $this->tarea->update([
             'estado' => 'procesando',
             'fecha_ejecucion' => now(),
         ]);
 
-
+        // Si no se encontraron cursos, terminamos la tarea
         if ($this->cursos->isEmpty()) {
             $this->tarea->update([
                 'estado' => 'error',
@@ -65,6 +67,7 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
             return;
         }
 
+        // Obtenemos los slots sin reserva de los cursos.
         $slotsSinReserva = [];
 
         foreach ($this->cursos as $curso) {
@@ -76,7 +79,7 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
 
         if (empty($this->slots)) {
             $this->tarea->update([
-                'estado' => 'error',
+                'estado' => 'completado',
                 'resultado' => 'No se encontraron slots sin reserva',
                 'fecha_fin' => now(),
             ]);
@@ -103,14 +106,13 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
                 return;
             }
 
-
             $tarea = Tarea::create([
                 'tipo_tarea_id' => TipoTarea::where('alias', 'aceptar_reservas_sin_conflictos')->first()->id,
                 'estado' => 'pendiente',
                 'fecha_inicio' => now(),
             ]);
 
-            AceptarReservasSinConflictosJob::dispatch($reservas, $tarea);
+            AceptarReservasSinConflictosJob::dispatch($tarea->id, $reservas);
 
             $this->tarea->update([
                 'estado' => 'completado',
@@ -129,19 +131,21 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
 
             $espacio = $this->obtenerEspacio($curso, $slot);
 
-            $reserva = Reserva::create([
-                'reservable_id' => $espacio->id,
-                'reservable_type' => Espacio::class,
-                'asignado_a' => $curso->docentes()->first()->id,
-                'fecha' => Carbon::parse($slot['dia']),
-                'hora_inicio' => $slot['hora_inicio'],
-                'hora_fin' => $slot['hora_fin'],
-                'comentario' => 'Reserva generada por tarea programada',
-                'type' => 'Otro',
-                'slot_id' => $slot['id'],
-            ]);
+            if ($espacio) {
+                $reserva = Reserva::create([
+                    'reservable_id' => $espacio->id,
+                    'reservable_type' => Espacio::class,
+                    'asignado_a' => $curso->docentes()->first()->id,
+                    'fecha' => Carbon::parse($slot['dia']),
+                    'hora_inicio' => $slot['hora_inicio'],
+                    'hora_fin' => $slot['hora_fin'],
+                    'comentario' => 'Reserva generada por tarea programada',
+                    'type' => 'Otro',
+                    'slot_id' => $slot['id'],
+                ]);
 
-            $reservas[] = $reserva->id;
+                $reservas[] = $reserva->id;
+            }
         }
 
         return $reservas;
@@ -149,7 +153,6 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
 
     private function obtenerEspacio(Curso $curso, $slot)
     {
-
         $espacioAnteriorId = $curso->reservas->last()?->reservas->first()?->reservable_id;
 
         if ($espacioAnteriorId) {
@@ -163,22 +166,49 @@ class CrearReservasDesdeCursosGenerandoSlotsJob implements ShouldQueue
             ];
 
             // Verificamos si el espacio tiene disponibilidad en el horario
-            if ($espacioAnterior && $espacioAnterior->disponibilidad($slots)) {
+            if ($espacioAnterior && $espacioAnterior->slotDisponible($slots)) {
                 return $espacioAnterior;
+            } else {
+                $espacio = $this->buscarNuevoEspacio($curso, $slot);
+                return $espacio;
             }
         }
 
-        // Buscamos un nuevo espacio que cumpla con los requisitos
-        $espacio = Espacio::where('capacidad', '>=', $curso->alumnos_matriculados)
+        $espacio = $this->buscarNuevoEspacio($curso, $slot);
+
+        return $espacio;
+    }
+
+    private function buscarNuevoEspacio(Curso $curso, $slot)
+    {
+        $espacios = Espacio::where('capacidad', '>=', $curso->alumnos_matriculados)
             ->whereIn('tiposespacios_id', [1, 2])
             ->whereDoesntHave('reservas', function ($query) use ($slot) {
                 $query->where('fecha', $slot['dia'])
-                    ->where('hora_inicio', $slot['hora_inicio'])
-                    ->where('hora_fin', $slot['hora_fin']);
+                    ->where(function ($q) use ($slot) {
+                        $q->where(function ($subQ) use ($slot) {
+                            // Caso 1: La nueva reserva comienza durante una reserva existente
+                            $subQ->where('hora_inicio', '<=', $slot['hora_inicio'])
+                                 ->where('hora_fin', '>', $slot['hora_inicio']);
+                        })->orWhere(function ($subQ) use ($slot) {
+                            // Caso 2: La nueva reserva termina durante una reserva existente
+                            $subQ->where('hora_inicio', '<', $slot['hora_fin'])
+                                 ->where('hora_fin', '>=', $slot['hora_fin']);
+                        })->orWhere(function ($subQ) use ($slot) {
+                            // Caso 3: La nueva reserva engloba completamente una reserva existente
+                            $subQ->where('hora_inicio', '>=', $slot['hora_inicio'])
+                                 ->where('hora_fin', '<=', $slot['hora_fin']);
+                        });
+                    });
             })
-            ->inRandomOrder()
-            ->first();
+            ->orderBy('capacidad', 'desc')
+            ->get();
 
-        return $espacio;
+        // Si hay múltiples espacios disponibles, seleccionar uno aleatoriamente
+        if ($espacios->isNotEmpty()) {
+            return $espacios->random();
+        }
+
+        return null;
     }
 }

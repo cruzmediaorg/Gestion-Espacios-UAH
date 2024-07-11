@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TipoEspacio extends Model
 {
-    const TABLA = 'tiposEspacios';
+    const TABLA = 'tiposespacios';
     use SoftDeletes;
 
     protected $table = self::TABLA;

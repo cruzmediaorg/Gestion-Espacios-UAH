@@ -236,123 +236,101 @@ const asignaturas = [
      */
     public function run(): void
     {
-        Curso::all()->each->forceDelete();
-        Asignatura::all()->each->forceDelete();
+        $this->limpiarDatos();
+        $this->crearAsignaturas();
+        $this->crearCursos();
+    }
 
-        $asignaturasSinRepetir = collect(self::asignaturas)->unique('Codigo');
+    private function limpiarDatos(): void
+    {
+        Curso::query()->delete();
+        Asignatura::query()->delete();
+    }
 
-        foreach ($asignaturasSinRepetir as $asignatura) {
-            $asignaturaModel = Asignatura::create([
+    private function crearAsignaturas(): void
+    {
+        $asignaturasUnicas = collect(self::asignaturas)->unique('Codigo');
+        
+        foreach ($asignaturasUnicas as $asignatura) {
+            Asignatura::create([
                 'codigo' => $asignatura['Codigo'],
                 'nombre' => $asignatura['Nombre'],
             ]);
-
-            $cuatrimestre = $asignatura['Cuatrimestre'];
-
-            $this->crearCurso($asignaturaModel, $cuatrimestre);
         }
-
     }
 
-    private function crearCurso($asignatura, $cuatrimestre): void
+    private function crearCursos(): void
     {
-        // Creamos el curso
-        $clases = collect(self::asignaturas)->where('Codigo', $asignatura->codigo)->all();
+        $asignaturas = Asignatura::all();
+        
+        foreach ($asignaturas as $asignatura) {
+            $clases = collect(self::asignaturas)->where('Codigo', $asignatura->codigo)->values();
+            $periodo = $this->obtenerPeriodo($clases[0]['Cuatrimestre']);
+            
+            $curso = $this->crearCurso($asignatura, $periodo, $clases->count());
+            $this->asignarDocentes($curso);
+            $this->crearSlots($curso, $clases);
+        }
+    }
 
+    private function obtenerPeriodo(string $cuatrimestre): Periodo
+    {
+        return Periodo::where('nombre', '2024-2025 ' . $cuatrimestre)->first();
+    }
 
-        $periodo = Periodo::where('nombre', '2024-2025 ' . $cuatrimestre)->first();
-
-        $curso = Curso::create([
+    private function crearCurso(Asignatura $asignatura, Periodo $periodo, int $totalClases): Curso
+    {
+        return Curso::create([
             'nombre' => $asignatura->nombre,
             'asignatura_id' => $asignatura->id,
             'periodo_id' => $periodo->id,
             'alumnos_matriculados' => rand(10, 22),
-            'total_clases_curso' => 2,
+            'total_clases_curso' => $totalClases,
         ]);
-
-        // Asignar uno o 2 profesores de forma aleatoria
-
-        $docentes = User::where('tipo', 'Responsable')->get();
-
-        $docente1 = $docentes->random();
-        $docente2 = $docentes->random();
-
-        $cantidadProfesores = rand(1, 2);
-
-        $curso->docentes()->attach($docente1->id);
-
-        if ($cantidadProfesores === 2) {
-            $curso->docentes()->attach($docente2->id);
-        }
-
-
-        Log::debug('Hay ' . count($clases) . ' clases para la asignatura ' . $asignatura->nombre);
-
-        foreach ($clases as $key => $clase) {
-            $this->crearClase($curso, $clase, $key);
-        }
     }
 
-    private function parseHora($hora, $tipo): string
+    private function asignarDocentes(Curso $curso): void
     {
-        $hora = strtolower($hora);
-        $hora = explode(' a ', $hora);
-
-        if ($tipo === 'inicio') {
-            return $hora[0] . ':00:00';
-        } else {
-            return $hora[1] . ':00:00';
-        }
+        $docentes = User::where('tipo', 'Responsable')->inRandomOrder()->take(rand(1, 2))->get();
+        $curso->docentes()->attach($docentes->pluck('id'));
     }
 
-    private function crearClase(Curso $curso, array $clase, int $key): void
+    private function crearSlots(Curso $curso, $clases): void
     {
-        $dia = $this->diaEnNumero($clase['Dia']);
-        $horaInicio = $this->parseHora($clase['Hora'], 'inicio');
-        $horaFin = $this->parseHora($clase['Hora'], 'fin');
-
-        $periodo = $curso->periodo;
-        $fechaInicioPeriodo = $periodo->fecha_inicio;
-
-        $diasOcupados = [];
-
-        // Aseguramos que no haya repetición de asignaturas el mismo día
-        for ($i = 0; $i < $curso->total_clases_curso; $i++) {
-            $fechaClase = $this->calcularFecha($fechaInicioPeriodo, $dia, $i);
-            while (in_array($fechaClase, $diasOcupados)) {
-                $dia++;
-                if ($dia > 7) $dia = 1;
-                $fechaClase = $this->calcularFecha($fechaInicioPeriodo, $dia, $i);
+        $fechaInicio = Carbon::parse($curso->periodo->fecha_inicio);
+        $fechaActual = $fechaInicio->copy();
+    
+        foreach ($clases as $clase) {
+            $diaClase = $this->obtenerDiaSemana($clase['Dia']);
+            
+            // Avanzar hasta el próximo día de clase válido
+            while ($fechaActual->dayOfWeek !== Carbon::parse($diaClase)->dayOfWeek || 
+                   $curso->slots()->where('dia', $fechaActual->toDateString())->exists()) {
+                $fechaActual->addDay();
             }
-            $diasOcupados[] = $fechaClase;
-
+    
             $curso->slots()->create([
-                'dia' => $fechaClase,
-                'hora_inicio' => $horaInicio,
-                'hora_fin' => $horaFin,
+                'dia' => $fechaActual->toDateString(),
+                'hora_inicio' => $this->formatearHora($clase['Hora'], 'inicio'),
+                'hora_fin' => $this->formatearHora($clase['Hora'], 'fin'),
             ]);
+    
+            // Avanzar al siguiente día para la próxima iteración
+            $fechaActual->addDay();
         }
     }
 
-    private function diaEnNumero(string $dia): int
+    private function obtenerDiaSemana(string $dia): string
     {
-        $dias = [
-            'L' => 1,
-            'M' => 2,
-            'X' => 3,
-            'J' => 4,
-            'V' => 5,
-            'S' => 6,
-            'D' => 7,
-        ];
-
-        return $dias[$dia];
+        return [
+            'L' => 'Monday', 'M' => 'Tuesday', 'X' => 'Wednesday',
+            'J' => 'Thursday', 'V' => 'Friday', 'S' => 'Saturday', 'D' => 'Sunday'
+        ][$dia];
     }
 
-    private function calcularFecha($fechaInicioPeriodo, int $dia, int $key): string
+    private function formatearHora(string $hora, string $tipo): string
     {
-        $fecha = Carbon::parse($fechaInicioPeriodo)->addDays(($dia - 1) + ($key * 7));
-        return $fecha->toDateString();
+        $partes = explode(' a ', strtolower($hora));
+        return ($tipo === 'inicio' ? $partes[0] : $partes[1]) . ':00';
     }
-
 }
