@@ -36,6 +36,7 @@ class PermissionSeeder extends Seeder
             'Editar cursos',
             'Gestionar tareas automatizadas',
             'Ver logs',
+            'Generar reservas',
         ];
 
         foreach ($permissions as $permission) {

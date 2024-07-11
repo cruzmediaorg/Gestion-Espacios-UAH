@@ -54,6 +54,7 @@ export default function Index({ auth, reservas, openDrawer = false, isEdit = fal
             ({reservas.length})
             </h2>
             <div className="flex space-x-4">
+            <ReactIf condition={auth.permisos.includes('Generar reservas')}>
             <Button
                 onClick={() => {
                     setOpen(true)
@@ -63,6 +64,7 @@ export default function Index({ auth, reservas, openDrawer = false, isEdit = fal
                 variant="outline">
                 Generar reservas <RefreshCcw size={12} />
             </Button>
+            </ReactIf>
             <Button
                 onClick={() => {
                     router.get('/reservas/create')
