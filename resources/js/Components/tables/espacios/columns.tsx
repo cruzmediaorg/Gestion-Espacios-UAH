@@ -1,23 +1,29 @@
+import { Button } from "@/Components/ui/button";
+import { Badge } from "@/Components/ui/badge";
+import Checkbox from "@/Components/Checkbox";
+import { router } from "@inertiajs/react";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/Components/ui/button"
-import { Badge } from "@/Components/ui/badge"
-import Checkbox from "@/Components/Checkbox"
-import { router } from "@inertiajs/react"
 export type Espacio = {
-    id: string
-    nombre: string
+    id: string;
+    nombre: string;
     tipo: {
-        id: string
-        nombre: string
-    }
+        id: string;
+        nombre: string;
+    };
     localizacion: {
-        id: string
-        nombre: string
-    }
+        id: string;
+        nombre: string;
+    };
+};
+
+function puedeEditar(auth, original: TData) {
+
+    // Si tiene permisos de gestionar reservas
+    return !!auth.permisos.includes('Editar espacios');
+
 }
 
-export const columns: ColumnDef<Espacio>[] = [
+export const columns = (auth) => [
     {
         id: "select",
         header: ({ table }) => (
@@ -41,13 +47,11 @@ export const columns: ColumnDef<Espacio>[] = [
     {
         header: 'ID',
         accessorKey: 'id',
-
     },
     {
         header: 'Nombre',
         accessorKey: 'nombre',
     },
-
     {
         header: 'Tipo',
         accessorKey: 'tipo',
@@ -79,7 +83,18 @@ export const columns: ColumnDef<Espacio>[] = [
         cell: (row) => {
             return (
                 <div className="flex justify-center gap-2">
-                    <Button
+                         <Button
+                        variant="default"
+                        onClick={() => {
+                            router.get(route('espacios.show', { id: row.row.original.id }))
+                        }}
+                    >
+                        Ver
+                    </Button>
+                    {puedeEditar(auth, row.row.original) && (
+                  <div className="flex justify-center gap-2">
+                 
+                  <Button
                         variant="default"
                         onClick={() => {
                             router.get(route('espacios.edit', { id: row.row.original.id }))
@@ -87,6 +102,7 @@ export const columns: ColumnDef<Espacio>[] = [
                     >
                         Editar
                     </Button>
+                    
                     <Button
                         variant="destructive"
                         onClick={() => {
@@ -95,8 +111,11 @@ export const columns: ColumnDef<Espacio>[] = [
                     >
                         Eliminar
                     </Button>
+                    </div>
+
+                    )} 
                 </div>
             )
         },
     },
-]
+];

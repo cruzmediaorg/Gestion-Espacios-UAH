@@ -7,8 +7,10 @@ use App\Models\Equipamiento;
 use App\Models\Espacio;
 use App\Models\Localizacion;
 use App\Models\TipoEspacio;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class EspacioController extends Controller
 {
@@ -63,7 +65,10 @@ class EspacioController extends Controller
      */
     public function show(Espacio $espacio)
     {
-        //
+        return Inertia::render('Control/Espacios/Show', [
+            'usuarios' => User::where('id', auth()->id())->get(),
+            'espacio' => EspacioResource::make($espacio)
+        ]);
     }
 
     /**
@@ -105,8 +110,26 @@ class EspacioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Espacio $espacio)
+    public function downloadPdf(Espacio $espacio, int $periodo)
     {
-        //
+        $periodo = $periodo === 1 ? '2024-2025 C1' : '2024-2025 C2';
+
+        $espacio = Espacio::with(['reservas' => function ($query) use ($periodo) {
+            $query->whereBetween('fecha', $this->getPeriodDates($periodo));
+        }])->find($espacio->id);
+
+        return Pdf::view('pdf.horarios-espacio', ['espacio' => $espacio, 'periodo' => $periodo])
+                  ->format('a4')->name('horarios-espacio.pdf');
+    }
+
+    private function getPeriodDates($periodo)
+    {
+        // Definir las fechas de inicio y fin para cada período
+        $dates = [
+            '2024-2025 C1' => ['start' => '2024-09-01', 'end' => '2025-01-31'],
+            '2024-2025 C2' => ['start' => '2025-02-01', 'end' => '2025-06-30'],
+        ];
+
+        return [$dates[$periodo]['start'], $dates[$periodo]['end']];
     }
 }

@@ -99,6 +99,7 @@ Route::prefix('/control')->middleware(['auth', 'verified'])->group(function () {
 
     // Espacios
     Route::resource('espacios', EspacioController::class);
+    Route::get('/espacios/{espacio}/{data}/download-pdf', [EspacioController::class, 'downloadPdf'])->name('espacios.download-pdf');
     Route::group(['prefix' => 'espacios/equipamiento'], function () {
         Route::get('/{id}/edit', [EquipamientoEspacioController::class, 'edit'])->name('espacios.equipamiento.edit');
         Route::put('/{id}', [EquipamientoEspacioController::class, 'update'])->name('espacios.equipamiento.update');

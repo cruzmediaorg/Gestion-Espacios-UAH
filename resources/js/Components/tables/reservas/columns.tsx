@@ -1,8 +1,6 @@
 
-import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/Components/ui/button"
 import { Badge } from "@/Components/ui/badge"
-import Checkbox from "@/Components/Checkbox"
 import { router } from "@inertiajs/react"
 export type Reserva = {
     id: string

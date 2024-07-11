@@ -18,7 +18,7 @@ export default function Index({ auth, espacios, tiposEspacios, localizaciones })
         >
             <div className="h-full overflow-y-scroll">
                 <div className="">
-                    <DataTable columns={columns} data={espacios} tiposEspacios={tiposEspacios} localizaciones={localizaciones} />
+                    <DataTable columns={columns(auth)} data={espacios} tiposEspacios={tiposEspacios} localizaciones={localizaciones} />
                 </div>
             </div>
         </AuthenticatedLayout >
