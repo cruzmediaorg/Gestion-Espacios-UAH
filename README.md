@@ -8,6 +8,14 @@ Aplicación web para la gestión de espacios de la Universidad de Alcalá.
 ## Descripción
 Este proyecto forma parte del Trabajo de Fin del Máster Desarrollo Ágil de Software para la Web. Es una aplicación web desarrollada para gestionar y reservar espacios en la Universidad de Alcalá. Proporciona una interfaz amigable para los usuarios, permitiéndoles consultar la disponibilidad de los espacios y realizar reservas de manera eficiente.
 
+## Tech Stack:
+
+- Laravel 11
+- React.js
+- Inertia.js
+- Tailwind CSS (Shadcn)
+- Laravel Reverb
+
 ## Instalación
 
 Para clonar y ejecutar esta aplicación, sigue estos pasos:
