@@ -60,7 +60,7 @@ Para clonar y ejecutar esta aplicación, sigue estos pasos:
     
 2. Regístrate o inicia sesión.
 3. Navega a la sección de reservas para gestionar los espacios disponibles.
-do bajo la Licencia MIT. Consulta el archivo `LICENSE` para obtener más detalles.
+
 
 ## Contacto
 
