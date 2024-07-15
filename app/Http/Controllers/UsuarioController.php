@@ -21,7 +21,10 @@ class UsuarioController extends Controller
 
     public function create()
     {
-        return Inertia::render('Control/Usuarios/Create');
+        return Inertia::render('Control/Usuarios/Form', [
+            'isEdit' => false,
+            'roles' => Role::all()
+        ]);
     }
 
     public function store(Request $request)
@@ -30,6 +33,10 @@ class UsuarioController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required'
+        ]);
+
+        $request->merge([
+            'sid' => strtolower(str_replace(' ', '.', $request->name))
         ]);
 
         User::create($request->all());
